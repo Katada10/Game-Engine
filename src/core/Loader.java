@@ -111,21 +111,84 @@ public class Loader {
 		
 		String src = "";
 		try {
-			Scanner scanner = new Scanner(new File(path));
+			Scanner scanner = new Scanner(new File("res/models/" + path));
 			while (scanner.hasNextLine()) {
-				src += scanner.nextLine() + " ";
+				src += scanner.nextLine() + "\n";
 			}
 			scanner.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		
-		System.out.println(src);
-		
-		float[] verts = null, texCoords = null;
+		float[] verts = ProcessVerts(src),
+				texCoords = ProcessTex(src);
 		
 		return new GameObject(verts, texCoords, imagePath);
 	}
 
+	private static float[] ProcessVerts(String src) {
+		float[] verts;
+
+		String[] lines = src.split("\n");
+		String toRet = "";
+		
+		for (int i = 0; i < lines.length; i++) {
+			if(lines[i].toCharArray()[0] == 'v' && lines[i].toCharArray()[1] == ' ')
+			{
+				toRet += lines[i].replace("v", "").replace("\n", ",").replace(" ", ",");
+			}
+		}
+		
+		
+		char[] b= toRet.toCharArray();
+		b[0] = ' ';
+		
+		toRet = new String(b);
+		
+		String[] floats = toRet.split(","); 
+		verts = new float[floats.length];
+		
+		
+		for (int i = 0; i < verts.length; i++) {
+			verts[i] = Float.parseFloat(floats[i]);
+		}
+		
+		
+		return verts;
+	}
+
+	
+	private static float[] ProcessTex(String src)
+	{
+		float[] tex;
+
+		String[] lines = src.split("\n");
+		String toRet = "";
+		
+		for (int i = 0; i < lines.length; i++) {
+			if(lines[i].toCharArray()[0] == 'v' && lines[i].toCharArray()[1] == 't')
+			{
+				toRet += lines[i].replace("vt", "").replace("\n", ",").replace(" ", ",");
+			}
+		}
+		
+		
+		char[] b= toRet.toCharArray();
+		b[0] = ' ';
+		
+		toRet = new String(b);
+
+
+		String[] floats = toRet.split(","); 
+		tex = new float[floats.length];
+		
+		
+		for (int i = 0; i < tex.length; i++) {
+			tex[i] = Float.parseFloat(floats[i]);
+		}
+		
+		
+		return tex;
+	}
 
 }

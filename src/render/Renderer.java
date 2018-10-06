@@ -23,51 +23,17 @@ public class Renderer {
 		cam = new Camera();
 		sm = new ShaderManager(progId);
 		
-		float[] verts = {
-				 -1.0f,-1.0f,-1.0f, 
-				    -1.0f,-1.0f, 1.0f,
-				    -1.0f, 1.0f, 1.0f, 
-				    1.0f, 1.0f,-1.0f, 
-				    -1.0f,-1.0f,-1.0f,
-				    -1.0f, 1.0f,-1.0f, 
-				    1.0f,-1.0f, 1.0f,
-				    -1.0f,-1.0f,-1.0f,
-				    1.0f,-1.0f,-1.0f,
-				    1.0f, 1.0f,-1.0f,
-				    1.0f,-1.0f,-1.0f,
-				    -1.0f,-1.0f,-1.0f,
-				    -1.0f,-1.0f,-1.0f,
-				    -1.0f, 1.0f, 1.0f,
-				    -1.0f, 1.0f,-1.0f,
-				    1.0f,-1.0f, 1.0f,
-				    -1.0f,-1.0f, 1.0f,
-				    -1.0f,-1.0f,-1.0f,
-				    -1.0f, 1.0f, 1.0f,
-				    -1.0f,-1.0f, 1.0f,
-				    1.0f,-1.0f, 1.0f,
-				    1.0f, 1.0f, 1.0f,
-				    1.0f,-1.0f,-1.0f,
-				    1.0f, 1.0f,-1.0f,
-				    1.0f,-1.0f,-1.0f,
-				    1.0f, 1.0f, 1.0f,
-				    1.0f,-1.0f, 1.0f,
-				    1.0f, 1.0f, 1.0f,
-				    1.0f, 1.0f,-1.0f,
-				    -1.0f, 1.0f,-1.0f,
-				    1.0f, 1.0f, 1.0f,
-				    -1.0f, 1.0f,-1.0f,
-				    -1.0f, 1.0f, 1.0f,
-				    1.0f, 1.0f, 1.0f,
-				    -1.0f, 1.0f, 1.0f,
-				    1.0f,-1.0f, 1.0f
-				    };
-		
-		addObject(verts, "res/image.png");
+		addObject(Loader.LoadObj("cube.obj", "image.jpg"));
 	}
 
-	public void addObject(float[] verts, String image)
+	public void addObject(float[] verts, float[] texCoords, String image)
 	{
-		objects.add(new GameObject(verts, image));
+		objects.add(new GameObject(verts, texCoords, image));
+	}
+	
+	public void addObject(GameObject o)
+	{
+		objects.add(o);
 	}
 	
 	public void Render()

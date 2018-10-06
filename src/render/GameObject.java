@@ -3,18 +3,23 @@ package render;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 
+import core.Loader;
+
 public class GameObject {
 	private int vao;
 	private int vbo;
+	private int tbo;
+	private int texId;
 	String imagePath;
 	
-	private float[] vertices;
+	private float[] vertices, texCoords;
 
 	private Vector3f position, rotation, scale;
 
-	public GameObject(float[] vertices, String path) {
+	public GameObject(float[] vertices, float[] texCoords, String path) {
 		this.vertices = vertices;
 		this.imagePath = path;
+		this.texCoords = texCoords;
 
 		position = new Vector3f(0, 0, 0);
 		rotation = new Vector3f(0, 0, 0);
@@ -25,12 +30,19 @@ public class GameObject {
 	
 	public void Draw()
 	{
+		GL30.glActiveTexture(GL30.GL_TEXTURE0);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, texId);
+		
 		GL30.glBindVertexArray(vao);
+		
 		GL30.glEnableVertexAttribArray(0);
+		GL30.glEnableVertexAttribArray(1);
 		
 		GL30.glDrawArrays(GL30.GL_TRIANGLES, 0, vertices.length);
 		
 		GL30.glDisableVertexAttribArray(0);
+		GL30.glDisableVertexAttribArray(1);
+		
 		GL30.glBindVertexArray(0);
 	}
 	
@@ -45,6 +57,16 @@ public class GameObject {
 		GL30.glVertexAttribPointer(0, 3, GL30.GL_FLOAT,false, 0, 0);
 		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
 		
+		
+		texId = Loader.LoadImage("res/images/" + imagePath);
+		
+		
+		tbo = GL30.glGenBuffers();
+		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, tbo);
+		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, texCoords, GL30.GL_STATIC_DRAW);
+		GL30.glVertexAttribPointer(1, 2, GL30.GL_FLOAT,false, 0, 0);
+		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
+		
 		GL30.glBindVertexArray(0);
 		GL30.glBindVertexArray(1);
 	}
@@ -53,6 +75,7 @@ public class GameObject {
 	{
 		GL30.glDeleteVertexArrays(vao);
 		GL30.glDeleteBuffers(vbo);
+		GL30.glDeleteBuffers(tbo);
 	}
 	
 	

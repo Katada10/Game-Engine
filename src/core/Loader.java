@@ -2,8 +2,22 @@ package core;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.util.Scanner;
+
+import org.lwjgl.stb.*;
+
+import static org.lwjgl.stb.STBImage.*;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.system.MemoryStack;
+
+import render.GameObject;
 
 
 public class Loader {
@@ -70,4 +84,48 @@ public class Loader {
 		
 		return progId;
 	}
+
+	public static int LoadImage(String imagePath) {
+		int[] width =new int[1], height = new int[1], nrChannels = new int[1];
+		
+		ByteBuffer data = stbi_load(imagePath ,width, height,nrChannels,0);
+		
+		int texId = GL30.glGenTextures();
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, texId);
+		
+		
+		GL30.glPixelStorei(GL30.GL_UNPACK_ALIGNMENT, 1);
+		
+		GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_NEAREST);
+		GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_NEAREST);
+		
+		GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGB, width[0],
+			    height[0], 0, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE, data);
+		
+		return texId;
+	}
+
+
+	public static GameObject LoadObj(String path, String imagePath)
+	{
+		
+		String src = "";
+		try {
+			Scanner scanner = new Scanner(new File(path));
+			while (scanner.hasNextLine()) {
+				src += scanner.nextLine() + " ";
+			}
+			scanner.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(src);
+		
+		float[] verts = null, texCoords = null;
+		
+		return new GameObject(verts, texCoords, imagePath);
+	}
+
+
 }

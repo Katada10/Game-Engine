@@ -15,6 +15,7 @@ public class ShaderManager {
 		this.progId = progId;
 		
 		createMatrices();
+		setUniform("sampler", 0);
 	}
 	
 	public void render()
@@ -43,6 +44,13 @@ public class ShaderManager {
 		
 		GL30.glUniformMatrix4fv(location, false, fb);
 	}
+	
+	private void setUniform(String name, int val)
+	{
+		int location = GL30.glGetUniformLocation(progId, name);
+		GL30.glUniform1ui(location, val);
+	}
+	
 	
 	public void createMatrices()
 	{

@@ -119,6 +119,11 @@ public class Loader {
 
 		int[] indices = ProcessIndices(src);
 
+		System.out.println("Indices: ");
+		for(int i : indices)
+		{
+			System.out.print(i + ", ");
+		}
 		return new GameObject(vertices, texCoords, indices, imagePath);
 	}
 
@@ -166,23 +171,19 @@ public class Loader {
 				//Process the actual vertices
 				
 				String[] tess = vStr.split(" ");
-			
-				int[] indices = new int[tess.length];
-				
-				int counter = 0;
-				for (int i = 0; i < tess.length; i++) {
-					
-					if(counter == 1)
-						indices[i] = Integer.parseInt(tess[i]);
-					
-					
-					counter++;
 
-					if(counter == 3)
-					{
-						counter = 1;
-					}
-					
+
+				List<Integer> intList = new ArrayList<>();
+				
+				for (int i = 0; i < tess.length; i += 3) {
+					intList.add(Integer.parseInt(tess[i]));
+				}
+				
+				int[] indices = new int[intList.size()];
+				
+				for(int i = 0; i < indices.length; i++)
+				{
+					indices[i] = intList.get(i);
 				}
 			return indices;
 			}

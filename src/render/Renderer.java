@@ -24,7 +24,7 @@ public class Renderer {
 		cam = new Camera();
 		sm = new ShaderManager(progId);
 
-		addObject(Loader.LoadModel("cube.obj", "image.jpg"));
+		addObject(Loader.LoadModel("model.dae", "image.jpg"));
 	}
 
 	public void addObject(float[] verts, float[] texCoords, int[] indices, String image)

@@ -26,7 +26,7 @@ public class GameObject {
 		this.texCoords = texCoords;
 		this.indices = indices;
 
-		position = new Vector3f(0, 0, 0);
+		position = new Vector3f(0, -0.001f, 0);
 		rotation = new Vector3f(0, 0, 0);
 		scale = new Vector3f(1, 1, 1);
 		
@@ -43,7 +43,8 @@ public class GameObject {
 		GL30.glEnableVertexAttribArray(0);
 		GL30.glEnableVertexAttribArray(1);
 		
-		GL30.glDrawElements(GL30.GL_TRIANGLE_FAN, indices.length, GL30.GL_UNSIGNED_SHORT, 0);
+		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
+		GL30.glDrawElements(GL30.GL_TRIANGLE_FAN, indices.length, GL30.GL_UNSIGNED_INT, 0);
 		
 		GL30.glDisableVertexAttribArray(0);
 		GL30.glDisableVertexAttribArray(1);
@@ -67,7 +68,6 @@ public class GameObject {
 		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
 		GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, indices, GL30.GL_STATIC_DRAW);
 		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, 0);
-		
 		
 		texId = Loader.LoadImage("res/images/" + imagePath);
 		

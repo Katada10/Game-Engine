@@ -126,18 +126,19 @@ public class Loader {
 		}
 		
 		
-		Vertex[] verts = ProcessVerts(src);
-				float[] texCoords = ProcessTex(src);
 		
-		int[] indices = indexVBO(src, verts);
+		float[] vertices = ProcessVerts(src);
+		float[] texCoords = ProcessTex(src);
 		
-		return null;
+		
+		int[] indices =  indexVBO(src);
+		
+		return new GameObject(vertices, texCoords, indices, imagePath);
 	}
-	
-	private static int[] indexVBO(String src, Vertex[] vertices)
+
+
+	private static int[] indexVBO(String src)
 	{
-		int[] ind = {2, 4, 1, 8, 6, 5};
-		
 		String[] lines = src.split("\n");
 		String toRet = "";
 		
@@ -203,12 +204,18 @@ public class Loader {
 			map.put(i, vert);
 		}
 
+		int[] ind = new int[vertIndices.size()];
+		
+		for(int i = 0; i < vertIndices.size(); i++)
+		{
+			ind[i] = vertIndices.get(i);
+		}
 		
 		return ind;
 	}
 
-	private static Vertex[] ProcessVerts(String src) {
-		Vertex[] verts = null;
+	private static float[] ProcessVerts(String src) {
+		float[] verts;
 
 		String[] lines = src.split("\n");
 		String toRet = "";
@@ -216,7 +223,7 @@ public class Loader {
 		for (int i = 0; i < lines.length; i++) {
 			if(lines[i].toCharArray()[0] == 'v' && lines[i].toCharArray()[1] == ' ')
 			{
-				toRet += lines[i].replace("v", "").replace("\n", ",");
+				toRet += lines[i].replace("v", "").replace("\n", ",").replace(" ", ",");
 			}
 		}
 		
@@ -225,8 +232,17 @@ public class Loader {
 		b[0] = ' ';
 		
 		toRet = new String(b);
+
+
+		String[] floats = toRet.split(","); 
+		verts = new float[floats.length];
 		
-		System.out.println(toRet);
+		
+		for (int i = 0; i < verts.length; i++) {
+			verts[i] = Float.parseFloat(floats[i]);
+		}
+		
+		
 		return verts;
 	}
 

@@ -111,7 +111,7 @@ public class Loader {
 	}
 
 
-	public static GameObject LoadObj(String path, String imagePath)
+	public static GameObject LoadModel(String path, String imagePath)
 	{
 		
 		String src = "";
@@ -126,158 +126,19 @@ public class Loader {
 		}
 		
 		
+		// tag is <float_array></float_array>
+		//tex Coords are in mesh-map, vertices are mesh-positions
+		//<p> contains indices, first vertex, then normal, then texcoord
 		
-		float[] vertices = ProcessVerts(src);
-		float[] texCoords = ProcessTex(src);
+		//You Got This!
+		float[] vertices = {-1, -1, 0, 1, -1 ,0 ,-1 ,1, 0 ,1, 1, 0};
+		float[] texCoords = {0, 0 ,1 ,0.9999999f, 0, 1, 0 ,
+				0, 0.9999999f, 0 ,1 ,0};
 		
-		
-		int[] indices =  indexVBO(src);
+		int[] indices = {1 ,2  ,0 , 1 ,3 ,2};
 		
 		return new GameObject(vertices, texCoords, indices, imagePath);
 	}
 
-
-	private static int[] indexVBO(String src)
-	{
-		String[] lines = src.split("\n");
-		String toRet = "";
-		
-		for (int i = 0; i < lines.length; i++) {
-			if(lines[i].toCharArray()[0] == 'f')
-			{
-				toRet += lines[i].replace("f ", " ").replace(" ", ",");
-			}
-		}
-		
-		char[] x = toRet.toCharArray();
-		x[0] = ' ';
-		
-		
-		toRet = new String(x);
-
-		String[] pairs = toRet.split(",");
-		
-		List<Integer> vertIndices = new ArrayList<>();
-		List<Integer> texIndices = new ArrayList<>();
-		
-		for(int i = 0; i < pairs.length; i++)
-		{
-			String p = pairs[i].replace(" ", "");
-			
-			String[] split = p.split("/");
-			
-			vertIndices.add(Integer.parseInt(split[0]));
-			texIndices.add(Integer.parseInt(split[1]));
-		}
-		
-		
-		HashMap<Integer, Vertex> map = new HashMap<>();
-	
-		 lines = src.split("\n");
-		 toRet = "";
-		
-		for (int i = 0; i < lines.length; i++) {
-			if(lines[i].toCharArray()[0] == 'v' && lines[i].toCharArray()[1] == ' ')
-			{
-				toRet += lines[i].replace("v ", "");
-				toRet += ",";
-			}
-		}
-		
-		char[] arr = toRet.toCharArray();
-		arr[arr.length - 1] = ' ';
-		
-		toRet = new String(arr);
-		
-		String[] myarr = toRet.split(",");
-		
-		for(int i = 0 ; i < myarr.length; i++)
-		{
-			String a = myarr[i];
-			
-			String[] str = a.split(" ");
-
-			Vertex vert = new Vertex(Float.parseFloat(str[0]), Float.parseFloat(str[1]), 
-					Float.parseFloat(str[2]));
-			
-			vert.setKey(i);
-			map.put(i, vert);
-		}
-
-		int[] ind = new int[vertIndices.size()];
-		
-		for(int i = 0; i < vertIndices.size(); i++)
-		{
-			ind[i] = vertIndices.get(i);
-		}
-		
-		return ind;
-	}
-
-	private static float[] ProcessVerts(String src) {
-		float[] verts;
-
-		String[] lines = src.split("\n");
-		String toRet = "";
-		
-		for (int i = 0; i < lines.length; i++) {
-			if(lines[i].toCharArray()[0] == 'v' && lines[i].toCharArray()[1] == ' ')
-			{
-				toRet += lines[i].replace("v", "").replace("\n", ",").replace(" ", ",");
-			}
-		}
-		
-		
-		char[] b= toRet.toCharArray();
-		b[0] = ' ';
-		
-		toRet = new String(b);
-
-
-		String[] floats = toRet.split(","); 
-		verts = new float[floats.length];
-		
-		
-		for (int i = 0; i < verts.length; i++) {
-			verts[i] = Float.parseFloat(floats[i]);
-		}
-		
-		
-		return verts;
-	}
-
-	
-	private static float[] ProcessTex(String src)
-	{
-		float[] tex;
-
-		String[] lines = src.split("\n");
-		String toRet = "";
-		
-		for (int i = 0; i < lines.length; i++) {
-			if(lines[i].toCharArray()[0] == 'v' && lines[i].toCharArray()[1] == 't')
-			{
-				toRet += lines[i].replace("vt", "").replace("\n", ",").replace(" ", ",");
-			}
-		}
-		
-		
-		char[] b= toRet.toCharArray();
-		b[0] = ' ';
-		
-		toRet = new String(b);
-
-
-		String[] floats = toRet.split(","); 
-		tex = new float[floats.length];
-		
-		
-		for (int i = 0; i < tex.length; i++) {
-			tex[i] = Float.parseFloat(floats[i]);
-		}
-		
-		
-		return tex;
-	}
 
 }

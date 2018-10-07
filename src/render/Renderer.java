@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 
 import core.Loader;
 
@@ -22,8 +23,8 @@ public class Renderer {
 	
 		cam = new Camera();
 		sm = new ShaderManager(progId);
-		
-		addObject(Loader.LoadObj("cube1.obj", "image.jpg"));
+
+		addObject(Loader.LoadModel("cube.obj", "image.jpg"));
 	}
 
 	public void addObject(float[] verts, float[] texCoords, int[] indices, String image)
@@ -38,6 +39,7 @@ public class Renderer {
 	
 	public void Render()
 	{
+		GL30.glDisable(GL30.GL_CULL_FACE);
 		GL20.glUseProgram(progId);
 		
 		sm.render();

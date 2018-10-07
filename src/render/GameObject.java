@@ -57,11 +57,6 @@ public class GameObject {
 		vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
 
-		vbo = GL30.glGenBuffers();
-		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo);
-		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, vertices, GL30.GL_STATIC_DRAW);
-		GL30.glVertexAttribPointer(0, 3, GL30.GL_FLOAT,false, 0, 0);
-		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
 		
 		
 		ebo = GL30.glGenBuffers();
@@ -69,6 +64,12 @@ public class GameObject {
 		GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, indices, GL30.GL_STATIC_DRAW);
 		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, 0);
 		
+		vbo = GL30.glGenBuffers();
+		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo);
+		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, vertices, GL30.GL_STATIC_DRAW);
+		GL30.glVertexAttribPointer(0, 3, GL30.GL_FLOAT,false, 0, 0);
+		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
+
 		texId = Loader.LoadImage("res/images/" + imagePath);
 		
 		

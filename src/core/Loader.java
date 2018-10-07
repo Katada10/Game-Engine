@@ -125,50 +125,86 @@ public class Loader {
 		List<Integer> ind = comb.getIndices();
 
 		
-		Vector3f[] pg = new Vector3f[verts.size()];
-		Vector2f[] texCoords = new Vector2f[textures.size()];
+		float[] vertices = ConvertVector(verts);
+		float[] texCoords = ConvertVector2f(textures);
 
-		int[] indices = new int[ind.size()];
-
-		float[] vertArr = ConvertVector(pg);
-		float[] texArr = {};//ConvertVector2f(texCoords);
+		Integer[] arr = new Integer[ind.size()];
+		arr = ind.toArray(arr);
+		
+		int[] x = new int[arr.length];
+		
+		for (int i = 0; i < x.length; i++) {
+			x[i] = arr[i];
+		}
+		
+		
+		for (int i = 0; i < vertices.length; i++) {
+			System.out.print(vertices[i] + ", ");
+		}
+		
+		System.out.println();
+		
+		for (int i = 0; i < texCoords.length; i++) {
+			System.out.print(texCoords[i] + ", ");
+		}
+		
+		System.out.println();
+		
+		for (int i = 0; i < x.length; i++) {
+			System.out.print(x[i] + ", ");
+		}
 		
 		// CHANGE THIS WHEN DONE
-		return new GameObject(vertArr, texArr, indices, imagePath);
+		return new GameObject(vertices, texCoords, x, imagePath);
 	}
 
 	private static float[] ConvertVector2f(List<Vector2f> pg) {
-		float[] converted = new float[pg.size() * 3];
+		Vector2f[] arr = new Vector2f[pg.size()];
+		arr = pg.toArray(arr);
 		
-		int curr = 0;
-		for(int i = 0; i < converted.length; i++)
-		{
-			curr++;
-			if(curr == 3)
-			{
-				System.out.println(pg.get(i));
-				curr = 0;
-			}
+		List<Float> tconverted = new ArrayList<>();
+		
+
+		for (int i = 0; i < arr.length; i++) {
+			tconverted.add(arr[i].x);
+			tconverted.add(arr[i].y);
 		}
 		
-		return converted;
+		Float[] converted = new Float[tconverted.size()];
+		converted = tconverted.toArray(converted);
+		
+		float[] x = new float[converted.length];
+		
+		for (int i = 0; i < x.length; i++) {
+			x[i] = converted[i];
+		}
+		
+		return x;
 	}
 	
 	private static float[] ConvertVector(List<Vector3f> pg) {
-		float[] converted = new float[pg.size() * 3];
+		Vector3f[] arr = new Vector3f[pg.size()];
+		arr = pg.toArray(arr);
 		
-		int curr = 0;
-		for(int i = 0; i < converted.length; i++)
-		{
-			curr++;
-			if(curr == 3)
-			{
-				System.out.println(pg.get(i));
-				curr = 0;
-			}
+		List<Float> tconverted = new ArrayList<>();
+		
+
+		for (int i = 0; i < arr.length; i++) {
+			tconverted.add(arr[i].x);
+			tconverted.add(arr[i].y);
+			tconverted.add(arr[i].z);
 		}
 		
-		return converted;
+		Float[] converted = new Float[tconverted.size()];
+		converted = tconverted.toArray(converted);
+		
+		float[] x = new float[converted.length];
+		
+		for (int i = 0; i < x.length; i++) {
+			x[i] = converted[i];
+		}
+		
+		return x;
 	}
 
 	private static List<Vector3f> ProcessIndices(String src) {

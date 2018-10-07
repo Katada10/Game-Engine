@@ -23,12 +23,12 @@ public class Renderer {
 		cam = new Camera();
 		sm = new ShaderManager(progId);
 		
-		addObject(Loader.LoadObj("cube.obj", "image.jpg"));
+		addObject(Loader.LoadObj("cube1.obj", "image.jpg"));
 	}
 
-	public void addObject(float[] verts, float[] texCoords, String image)
+	public void addObject(float[] verts, float[] texCoords, int[] indices, String image)
 	{
-		objects.add(new GameObject(verts, texCoords, image));
+		objects.add(new GameObject(verts, texCoords, indices, image));
 	}
 	
 	public void addObject(GameObject o)

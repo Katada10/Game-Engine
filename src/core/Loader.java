@@ -7,6 +7,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.lwjgl.stb.*;
@@ -18,6 +22,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 
 import render.GameObject;
+import render.Vertex;
 
 
 public class Loader {
@@ -120,14 +125,90 @@ public class Loader {
 			e.printStackTrace();
 		}
 		
-		float[] verts = ProcessVerts(src),
-				texCoords = ProcessTex(src);
 		
-		return new GameObject(verts, texCoords, imagePath);
+		Vertex[] verts = ProcessVerts(src);
+				float[] texCoords = ProcessTex(src);
+		
+		int[] indices = indexVBO(src, verts);
+		
+		return null;
+	}
+	
+	private static int[] indexVBO(String src, Vertex[] vertices)
+	{
+		int[] ind = {2, 4, 1, 8, 6, 5};
+		
+		String[] lines = src.split("\n");
+		String toRet = "";
+		
+		for (int i = 0; i < lines.length; i++) {
+			if(lines[i].toCharArray()[0] == 'f')
+			{
+				toRet += lines[i].replace("f ", " ").replace(" ", ",");
+			}
+		}
+		
+		char[] x = toRet.toCharArray();
+		x[0] = ' ';
+		
+		
+		toRet = new String(x);
+
+		String[] pairs = toRet.split(",");
+		
+		List<Integer> vertIndices = new ArrayList<>();
+		List<Integer> texIndices = new ArrayList<>();
+		
+		for(int i = 0; i < pairs.length; i++)
+		{
+			String p = pairs[i].replace(" ", "");
+			
+			String[] split = p.split("/");
+			
+			vertIndices.add(Integer.parseInt(split[0]));
+			texIndices.add(Integer.parseInt(split[1]));
+		}
+		
+		
+		HashMap<Integer, Vertex> map = new HashMap<>();
+	
+		 lines = src.split("\n");
+		 toRet = "";
+		
+		for (int i = 0; i < lines.length; i++) {
+			if(lines[i].toCharArray()[0] == 'v' && lines[i].toCharArray()[1] == ' ')
+			{
+				toRet += lines[i].replace("v ", "");
+				toRet += ",";
+			}
+		}
+		
+		char[] arr = toRet.toCharArray();
+		arr[arr.length - 1] = ' ';
+		
+		toRet = new String(arr);
+		
+		String[] myarr = toRet.split(",");
+		
+		for(int i = 0 ; i < myarr.length; i++)
+		{
+			String a = myarr[i];
+			
+			String[] str = a.split(" ");
+
+			Vertex vert = new Vertex(Float.parseFloat(str[0]), Float.parseFloat(str[1]), 
+					Float.parseFloat(str[2]));
+			
+			vert.setKey(i);
+			map.put(i, vert);
+		}
+
+		
+		return ind;
 	}
 
-	private static float[] ProcessVerts(String src) {
-		float[] verts;
+	private static Vertex[] ProcessVerts(String src) {
+		Vertex[] verts = null;
 
 		String[] lines = src.split("\n");
 		String toRet = "";
@@ -135,7 +216,7 @@ public class Loader {
 		for (int i = 0; i < lines.length; i++) {
 			if(lines[i].toCharArray()[0] == 'v' && lines[i].toCharArray()[1] == ' ')
 			{
-				toRet += lines[i].replace("v", "").replace("\n", ",").replace(" ", ",");
+				toRet += lines[i].replace("v", "").replace("\n", ",");
 			}
 		}
 		
@@ -145,15 +226,7 @@ public class Loader {
 		
 		toRet = new String(b);
 		
-		String[] floats = toRet.split(","); 
-		verts = new float[floats.length];
-		
-		
-		for (int i = 0; i < verts.length; i++) {
-			verts[i] = Float.parseFloat(floats[i]);
-		}
-		
-		
+		System.out.println(toRet);
 		return verts;
 	}
 

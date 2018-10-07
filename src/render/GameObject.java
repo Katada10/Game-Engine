@@ -9,17 +9,22 @@ public class GameObject {
 	private int vao;
 	private int vbo;
 	private int tbo;
+	
+	int ebo;
+	
 	private int texId;
 	String imagePath;
 	
 	private float[] vertices, texCoords;
+	private int[] indices;
 
 	private Vector3f position, rotation, scale;
 
-	public GameObject(float[] vertices, float[] texCoords, String path) {
+	public GameObject(float[] vertices, float[] texCoords, int[] indices, String path) {
 		this.vertices = vertices;
 		this.imagePath = path;
 		this.texCoords = texCoords;
+		this.indices = indices;
 
 		position = new Vector3f(0, 0, 0);
 		rotation = new Vector3f(0, 0, 0);
@@ -38,7 +43,7 @@ public class GameObject {
 		GL30.glEnableVertexAttribArray(0);
 		GL30.glEnableVertexAttribArray(1);
 		
-		GL30.glDrawArrays(GL30.GL_TRIANGLES, 0, vertices.length);
+		GL30.glDrawElements(GL30.GL_TRIANGLE_FAN, indices.length, GL30.GL_UNSIGNED_SHORT, 0);
 		
 		GL30.glDisableVertexAttribArray(0);
 		GL30.glDisableVertexAttribArray(1);
@@ -56,6 +61,12 @@ public class GameObject {
 		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, vertices, GL30.GL_STATIC_DRAW);
 		GL30.glVertexAttribPointer(0, 3, GL30.GL_FLOAT,false, 0, 0);
 		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
+		
+		
+		ebo = GL30.glGenBuffers();
+		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
+		GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, indices, GL30.GL_STATIC_DRAW);
+		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, 0);
 		
 		
 		texId = Loader.LoadImage("res/images/" + imagePath);

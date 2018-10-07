@@ -127,31 +127,15 @@ public class Loader {
 		
 		float[] vertices = ConvertVector(verts);
 		float[] texCoords = ConvertVector2f(textures);
+		//ConvertVector2f(textures);
 
 		Integer[] arr = new Integer[ind.size()];
 		arr = ind.toArray(arr);
 		
 		int[] x = new int[arr.length];
-		
+
 		for (int i = 0; i < x.length; i++) {
 			x[i] = arr[i];
-		}
-		
-		
-		for (int i = 0; i < vertices.length; i++) {
-			System.out.print(vertices[i] + ", ");
-		}
-		
-		System.out.println();
-		
-		for (int i = 0; i < texCoords.length; i++) {
-			System.out.print(texCoords[i] + ", ");
-		}
-		
-		System.out.println();
-		
-		for (int i = 0; i < x.length; i++) {
-			System.out.print(x[i] + ", ");
 		}
 		
 		// CHANGE THIS WHEN DONE
@@ -163,7 +147,6 @@ public class Loader {
 		arr = pg.toArray(arr);
 		
 		List<Float> tconverted = new ArrayList<>();
-		
 
 		for (int i = 0; i < arr.length; i++) {
 			tconverted.add(arr[i].x);
@@ -308,7 +291,7 @@ public class Loader {
 
 					if (counter == 3) {
 						vertices.add(new Vector3f(Float.parseFloat(vertStrings[i - 2]),
-								Float.parseFloat(vertStrings[i - 1]), Float.parseFloat(vertStrings[i])));
+								Float.parseFloat(vertStrings[i - 1]), -Float.parseFloat(vertStrings[i])));
 						counter = 0;
 					}
 				}
@@ -381,6 +364,7 @@ public class Loader {
 		
 		List<Vector3f> vertsUnpacked = new ArrayList<>();
 		List<Vector2f> texUnpacked = new ArrayList<>();
+
 		List<Integer> indicesUnpacked = new ArrayList<>();
 		
 		Vector3f[] vertArr = new Vector3f[vertices.size()];
@@ -397,7 +381,7 @@ public class Loader {
 			Vector3f vertex = vertArr[(int)indexTriplets[i].x];
 			vertsUnpacked.add(vertex);
 			
-			Vector2f tex = texArr[(int)indexTriplets[i].y];
+			Vector2f tex = texArr[(int)indexTriplets[i].z];
 			texUnpacked.add(tex);
 			
 			indicesUnpacked.add(indicesUnpacked.size());

@@ -4,10 +4,12 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
+import render.Camera;
 import render.Renderer;
 
 
@@ -40,6 +42,8 @@ public class Engine {
 		if ( !glfwInit() )
 			throw new IllegalStateException("Unable to initialize GLFW");
 
+		
+		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 		
 		window = glfwCreateWindow(w, h, title, 0, 0);
 		if ( window == 0 )

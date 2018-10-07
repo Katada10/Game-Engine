@@ -11,18 +11,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import org.lwjgl.stb.*;
 
 import static org.lwjgl.stb.STBImage.*;
+
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 
+import render.Combination;
 import render.GameObject;
-import render.Vertex;
 
 public class Loader {
 	public static int LoadShaders(String vert, String frag) {
@@ -113,22 +117,61 @@ public class Loader {
 		// <p> contains indices, first vertex, then normal, then texcoord
 
 		// You Got This!
-		float[] vertices = Process(src, "mesh-positions");
+		
+		Combination comb = ProcessMain(src);
+		
+		List<Vector3f> verts = comb.getVerts();
+		List<Vector2f> textures = comb.getTex();
+		List<Integer> ind = comb.getIndices();
 
-		float[] texCoords = Process(src, "mesh-map");
+		
+		Vector3f[] pg = new Vector3f[verts.size()];
+		Vector2f[] texCoords = new Vector2f[textures.size()];
 
-		int[] indices = ProcessIndices(src);
+		int[] indices = new int[ind.size()];
 
-		System.out.println("Indices: ");
-		for(int i : indices)
-		{
-			System.out.print(i + ", ");
-		}
-		return new GameObject(vertices, texCoords, indices, imagePath);
+		float[] vertArr = ConvertVector(pg);
+		float[] texArr = {};//ConvertVector2f(texCoords);
+		
+		// CHANGE THIS WHEN DONE
+		return new GameObject(vertArr, texArr, indices, imagePath);
 	}
 
-	private static int[] ProcessIndices(String src)
-	{	
+	private static float[] ConvertVector2f(List<Vector2f> pg) {
+		float[] converted = new float[pg.size() * 3];
+		
+		int curr = 0;
+		for(int i = 0; i < converted.length; i++)
+		{
+			curr++;
+			if(curr == 3)
+			{
+				System.out.println(pg.get(i));
+				curr = 0;
+			}
+		}
+		
+		return converted;
+	}
+	
+	private static float[] ConvertVector(List<Vector3f> pg) {
+		float[] converted = new float[pg.size() * 3];
+		
+		int curr = 0;
+		for(int i = 0; i < converted.length; i++)
+		{
+			curr++;
+			if(curr == 3)
+			{
+				System.out.println(pg.get(i));
+				curr = 0;
+			}
+		}
+		
+		return converted;
+	}
+
+	private static List<Vector3f> ProcessIndices(String src) {
 		String[] lines = src.split("\n");
 
 		for (String s : lines) {
@@ -137,62 +180,58 @@ public class Loader {
 				char[] characters = s.toCharArray();
 
 				String nStr = "";
-				//Remove Tags
-				for(int b = 0; b <= characters.length - 1; b++)
-				{
-					//verts = verts.replace(characters[b], ' ');
-					if(b <= s.indexOf('>'))
-					{
+				// Remove Tags
+				for (int b = 0; b <= characters.length - 1; b++) {
+					// verts = verts.replace(characters[b], ' ');
+					if (b <= s.indexOf('>')) {
 						continue;
-					}
-					else
-					{
+					} else {
 						nStr += characters[b];
 					}
-					
-				}	
-				
-				//Removed First tag, remove second tag
+
+				}
+
+				// Removed First tag, remove second tag
 				String vStr = "";
 				char[] chara = nStr.toCharArray();
-				for(int b = 0; b <= chara.length - 1; b++)
-				{
-					//verts = verts.replace(characters[b], ' ');
+				for (int b = 0; b <= chara.length - 1; b++) {
+					// verts = verts.replace(characters[b], ' ');
 					vStr += chara[b];
-					
-					if(b == nStr.indexOf('<') - 1)
-					{
+
+					if (b == nStr.indexOf('<') - 1) {
 						break;
 					}
-				}	
-				
-				//Now we separated the vertices
-				
-				//Process the actual vertices
-				
-				String[] tess = vStr.split(" ");
-
-
-				List<Integer> intList = new ArrayList<>();
-				
-				for (int i = 0; i < tess.length; i += 3) {
-					intList.add(Integer.parseInt(tess[i]));
 				}
+
+				List<Vector3f> indices = new ArrayList<>();
 				
-				int[] indices = new int[intList.size()];
-				
-				for(int i = 0; i < indices.length; i++)
+				// Below separates vertindices
+
+				//int[] indices = new int[vStr.split(" ").length];
+				int count = 0;
+				for(int i = 0; i < vStr.split(" ").length; i++)
 				{
-					indices[i] = intList.get(i);
+					count++;
+					if(count == 3)
+					{
+						indices.add(new Vector3f(
+							Integer.parseInt(vStr.split(" ")[i - 2]), 
+							Integer.parseInt(vStr.split(" ")[i - 1]),
+							Integer.parseInt(vStr.split(" ")[i])));
+						count = 0;
+					}
+					
 				}
-			return indices;
+				// Process the actual vertices
+				return indices;
+				
 			}
 		}
-		
+
 		return null;
 	}
-	
-	private static float[] Process(String src, String flag) {
+
+	private static List<Vector3f> Process(String src, String flag) {
 		String[] lines = src.split("\n");
 
 		for (String s : lines) {
@@ -201,49 +240,156 @@ public class Loader {
 				char[] characters = s.toCharArray();
 
 				String nStr = "";
-				//Remove Tags
-				for(int b = 0; b <= characters.length - 1; b++)
-				{
-					//verts = verts.replace(characters[b], ' ');
-					if(b <= s.indexOf('>'))
-					{
+				// Remove Tags
+				for (int b = 0; b <= characters.length - 1; b++) {
+					// verts = verts.replace(characters[b], ' ');
+					if (b <= s.indexOf('>')) {
 						continue;
-					}
-					else
-					{
+					} else {
 						nStr += characters[b];
 					}
-					
-				}	
-				
-				//Removed First tag, remove second tag
+
+				}
+
+				// Removed First tag, remove second tag
 				String vStr = "";
 				char[] chara = nStr.toCharArray();
-				for(int b = 0; b <= chara.length - 1; b++)
-				{
-					//verts = verts.replace(characters[b], ' ');
+				for (int b = 0; b <= chara.length - 1; b++) {
+					// verts = verts.replace(characters[b], ' ');
 					vStr += chara[b];
-					
-					if(b == nStr.indexOf('<') - 1)
-					{
+
+					if (b == nStr.indexOf('<') - 1) {
 						break;
 					}
-				}	
-				
-				//Process the actual vertices
-				
-				String[] tess = vStr.split(" ");
-			
-				float[] vertArr = new float[tess.length];
-				for (int i = 0; i < tess.length; i++) {
-					vertArr[i] = Float.parseFloat(tess[i]);
 				}
-				return vertArr;
+
+				String[] vertStrings = vStr.split(" ");
+
+				List<Vector3f> vertices = new ArrayList<>();
+				int counter = 0;
+				for (int i = 0; i < vertStrings.length; i++) {
+					counter++;
+
+					if (counter == 3) {
+						vertices.add(new Vector3f(Float.parseFloat(vertStrings[i - 2]),
+								Float.parseFloat(vertStrings[i - 1]), Float.parseFloat(vertStrings[i])));
+						counter = 0;
+					}
+				}
+				return vertices;
 			}
 		}
-		
+		return null;
+	}
+	
+	private static List<Vector2f> Process2f(String src, String flag) {
+		String[] lines = src.split("\n");
 
+		for (String s : lines) {
+			if (s.contains("<float_array") && s.contains(flag)) {
+				// We found the line with vertices
+				char[] characters = s.toCharArray();
+
+				String nStr = "";
+				// Remove Tags
+				for (int b = 0; b <= characters.length - 1; b++) {
+					// verts = verts.replace(characters[b], ' ');
+					if (b <= s.indexOf('>')) {
+						continue;
+					} else {
+						nStr += characters[b];
+					}
+
+				}
+
+				// Removed First tag, remove second tag
+				String vStr = "";
+				char[] chara = nStr.toCharArray();
+				for (int b = 0; b <= chara.length - 1; b++) {
+					// verts = verts.replace(characters[b], ' ');
+					vStr += chara[b];
+
+					if (b == nStr.indexOf('<') - 1) {
+						break;
+					}
+				}
+
+				String[] vertStrings = vStr.split(" ");
+
+				List<Vector2f> vertices = new ArrayList<>();
+				int counter = 0;
+				for (int i = 0; i < vertStrings.length; i++) {
+					counter++;
+
+					if (counter == 2) {
+						vertices.add(new Vector2f(Float.parseFloat(vertStrings[i - 1]),
+								Float.parseFloat(vertStrings[i])));
+						counter = 0;
+					}
+				}
+				return vertices;
+			}
+		}
 		return null;
 	}
 
+	private static  Combination ProcessMain(String src) {
+
+		// Array vertices
+		// Array texcoords
+
+		List<Vector3f> vertices = Process(src, "mesh-positions");
+		List<Vector2f> texCoords = Process2f(src, "mesh-map");
+		
+		List<Vector3f> indices = ProcessIndices(src);
+		
+		List<Vector3f> vertsUnpacked = new ArrayList<>();
+		List<Vector2f> texUnpacked = new ArrayList<>();
+		List<Integer> indicesUnpacked = new ArrayList<>();
+		
+		Vector3f[] vertArr = new Vector3f[vertices.size()];
+		vertArr = vertices.toArray(vertArr);
+		
+		Vector2f[] texArr = new Vector2f[texCoords.size()];
+		texArr = texCoords.toArray(texArr);
+		
+		Vector3f[] indexTriplets = new Vector3f[indices.size()];
+		indexTriplets = indices.toArray(indexTriplets);
+		
+		for(int i = 0; i < indexTriplets.length; i++)
+		{
+			Vector3f vertex = vertArr[(int)indexTriplets[i].x];
+			vertsUnpacked.add(vertex);
+			
+			Vector2f tex = texArr[(int)indexTriplets[i].y];
+			texUnpacked.add(tex);
+			
+			indicesUnpacked.add(indicesUnpacked.size());
+		}
+		
+
+		return new Combination(vertsUnpacked, texUnpacked, indicesUnpacked);
+		
+		/*
+		 * Read vertices from file, store in vertice, same for texcoords
+		 * 
+		 * Array vertsunpacked, texunpacked Array int indicesunpacked
+		 * 
+		 * 
+		 * Loop STARTS HERE (every three pairs) 
+		 * v1 is the index v1/vt1 
+		 * Vector3 vertex1 = vertices[v1] 
+		 * vertsunpacked.add(vertex1)
+		 * 
+		 * same for other two verts
+		 * 
+		 * 
+		 * same as previous but for texcoords Vector2 tex1 = texcoords[vt1]
+		 * texunpacked.add(tex1)
+		 * 
+		 * Maybe some trouble here indicesUnpacked.add(indicesUnpacked.size)
+		 * indicesUnpacked.add(indicesUnpacked.size)
+		 * indicesUnpacked.add(indicesUnpacked.size) LOOP ENDS HERE - NEXT ITERATION
+		 */
+	}
 }

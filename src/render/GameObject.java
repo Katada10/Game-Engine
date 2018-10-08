@@ -24,10 +24,6 @@ public class GameObject {
 	int ebo;
 	
 	private int texId;
-	
-	public int getTexId() {
-		return texId;
-	}
 
 	String imagePath;
 	

@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 
+import Util.Texture;
 import core.Loader;
 
 public class GameObject {
@@ -41,11 +42,16 @@ public class GameObject {
 	private int[] indices;
 
 	private Vector3f position, rotation, scale;
+	Texture texture;
 	
 
-	public GameObject(float[] vertices, float[] texCoords, int[] indices, String path) {
+	public Texture getTexture() {
+		return texture;
+	}
+
+	public GameObject(float[] vertices, float[] texCoords, int[] indices,  Texture t) {
 		this.vertices = vertices;
-		this.imagePath = path;
+		this.texture = t;
 		this.texCoords = texCoords;
 		this.indices = indices;
 		
@@ -56,20 +62,6 @@ public class GameObject {
 		
 		GenArrays();
 	}
-	
-	public GameObject(float[] vertices, float[] texCoords, int[] indices, String path, Vector3f pos) {
-		this.vertices = vertices;
-		this.imagePath = path;
-		this.texCoords = texCoords;
-		this.indices = indices;
-
-		position = pos;
-		rotation = new Vector3f(0, 0, 0);
-		scale = new Vector3f(1, 1, 1);
-		
-		GenArrays();
-	}
-	
 	
 	private int loadAttrib(int id, float[] data, int size)
 	{
@@ -110,8 +102,6 @@ public class GameObject {
 		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
 		GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, indices, GL30.GL_STATIC_DRAW);
 		
-		
-		texId = Loader.LoadImage("res/images/" + imagePath);
 		
 		tbo = loadAttrib(1, texCoords, 2);
 		

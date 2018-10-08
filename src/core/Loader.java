@@ -87,7 +87,7 @@ public class Loader {
 	public static int LoadImage(String imagePath) {
 		int[] width = new int[1], height = new int[1], nrChannels = new int[1];
 
-		ByteBuffer data = stbi_load(imagePath, width, height, nrChannels, 0);
+		ByteBuffer data = stbi_load("res/images/"+ imagePath, width, height, nrChannels, 0);
 
 		int texId = GL30.glGenTextures();
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, texId);

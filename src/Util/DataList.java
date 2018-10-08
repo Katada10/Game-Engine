@@ -54,7 +54,9 @@ public class DataList {
 	public boolean contains(DataPair d)
 	{
 		for (DataPair pair : pairs) {
-			if((pair.getVertex() == d.getVertex()) && pair.getTexture() == d.getTexture())
+			if((pair.getVertex() == d.getVertex()) 
+					&& pair.getTexture() == d.getTexture()
+					&& pair.getNormal() == d.getNormal())
 			{
 				return true;
 			}

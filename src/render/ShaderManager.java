@@ -6,65 +6,28 @@ import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 
-public class ShaderManager {
-	private int progId;
-	private Matrix4f projection, view;
-	
+import Util.MatrixManager;
+
+public class ShaderManager extends MatrixManager {
 	
 	public ShaderManager(int progId) {
-		this.progId = progId;
-		
-		
-		setUniform("sampler", 0);
-		view = new Matrix4f();
-		
-		createMatrices();
+		super(progId);
 	}
 	
 	public void render(GameObject o)
 	{
+		Model model = o.getModel();
 		setMatrix("projection", projection);
 		setMatrix("view", view);
 		
-		o.setModel(o.getModel().translate(o.getPosition())
-				.rotate(o.getRotation().x, new Vector3f(1, 0, 0))
-				.rotate(o.getRotation().y, new Vector3f(0, 1, 0))
-				.rotate(o.getRotation().z, new Vector3f(0, 0, 1))
-				.scale(o.getScale()));
-		
-		setMatrix("model", o.getModel());
+		model.setModelMat(model.getModelMat().translate(model.getPosition()).
+				rotate(model.getRotation().x, new Vector3f(1, 0, 0))
+				.rotate(model.getRotation().y, new Vector3f(0, 1, 0))
+				.rotate(model.getRotation().z, new Vector3f(0, 0, 1))
+				.scale(model.getScale()));
 
+		setMatrix("model", model.getModelMat());
+		
 		o.Draw();
-	}
-	
-	private void setMatrix(String name, Matrix4f value)
-	{
-		int location = GL30.glGetUniformLocation(progId, name);
-		FloatBuffer fb = BufferUtils.createFloatBuffer(16);
-		
-		value.get(fb);
-		
-		GL30.glUniformMatrix4fv(location, false, fb);
-	}
-	
-	private void setUniform(String name, int val)
-	{
-		int location = GL30.glGetUniformLocation(progId, name);
-		GL30.glUniform1ui(location, val);
-	}
-	
-	
-	public void createMatrices()
-	{
-		projection = new Matrix4f().perspective(Camera.FOV, 
-				Camera.aspect, Camera.near, 
-				Camera.far);
-		
-		view.rotate((float)Math.toRadians(Camera.getYaw()), new Vector3f(0, 1, 0));
-		view.rotate((float)Math.toRadians(Camera.getPitch()), new Vector3f(1, 0, 0));
-		
-		view.translate(new Vector3f(-Camera.getPosition().x,
-				-Camera.getPosition().y, -Camera.getPosition().z));
-		
 	}
 }

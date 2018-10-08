@@ -7,6 +7,7 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import Util.MatrixManager;
 import core.Loader;
 import core.ModelLoader;
 
@@ -23,11 +24,12 @@ public class Renderer {
 	
 		cam = new Camera();
 		sm = new ShaderManager(progId);
-
-
-//Add Objects Here
-		
+	
 		addObject(Loader.LoadObj("cube", "mario.jpg"));
+		
+		/*for (GameObject obj : ModelLoader.Load("model.obj", "mario.jpg")) {
+			addObject(obj);
+		}*/
 	}
 	
 	public void addObject(GameObject o)
@@ -39,12 +41,12 @@ public class Renderer {
 	{
 		GL20.glUseProgram(progId);
 		
+		
 		for(GameObject o : objects)
 		{
-			o.setRotation(0, -0.01f, 0);
+			o.getModel().setRotation(0, -0.01f, 0);
 			sm.render(o);
 		}
-		
 	}
 	
 	public void Destroy()

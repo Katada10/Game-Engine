@@ -1,6 +1,7 @@
 package core;
 
 import render.GameObject;
+import render.Model;
 
 import static org.lwjgl.assimp.Assimp.*;
 
@@ -50,6 +51,7 @@ public class ModelLoader {
 
 	private static GameObject processMesh(AIMesh mesh, AIScene scene, String path) {
 		List<Float> vertices = new ArrayList<>();
+		List<Float> normals = new ArrayList<>();
 		List<Float> textures = new ArrayList<>();
 		List<Integer> indices = new ArrayList<>();
 		
@@ -65,6 +67,16 @@ public class ModelLoader {
 	        vertices.add(vertex.y);
 	        vertices.add(vertex.z);
 	        
+	        Vector3f normal = new Vector3f();
+	        
+	        normal.x = mesh.mNormals().get(i).x();
+	        normal.y = mesh.mNormals().get(i).y();
+	        normal.z = mesh.mNormals().get(i).z();
+	        
+	        normals.add(normal.x);
+	        normals.add(normal.y);
+	        normals.add(normal.z);
+	        
 	        textures.add(mesh.mTextureCoords(0).get(i).x());
 	        textures.add(mesh.mTextureCoords(0).get(i).y());
 	    }
@@ -79,13 +91,17 @@ public class ModelLoader {
 		
 		float[] verts = Utils.ToArray(vertices);
 		
+		float[] norms = Utils.ToArray(normals);
+		
 		float[] tex = Utils.ToArray(textures);
 
 		int[] ind = Utils.ToArrayInt(indices);
 		
 		Texture t = new Texture(path);
 
-		GameObject o = new GameObject(verts, tex, ind, t);
+		
+		Model model = new Model(verts, norms, tex, ind, t);
+		GameObject o = new GameObject(model);
 		return o;
 	}
 }

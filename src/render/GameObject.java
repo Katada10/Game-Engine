@@ -1,36 +1,81 @@
 package render;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 
 import Util.Texture;
-import core.Loader;
 
 public class GameObject {
-	private int vao, vbo, tbo, ebo, texId;
+	private int vao, ebo;
 	
-	private Matrix4f model;
-	String imagePath;
-	
-	private float[] vertices, texCoords;
-	private int[] indices;
+	private List<Integer> buffers;
+	private Model model;
 
-	private Vector3f position, rotation, scale;
-	Texture texture;
-	
-	public GameObject(float[] vertices, float[] texCoords, int[] indices,  Texture t) {
-		this.vertices = vertices;
-		this.texture = t;
-		this.texCoords = texCoords;
-		this.indices = indices;
+	public GameObject(Model mesh) {
+		buffers = new ArrayList<>();
 		
-		model = new Matrix4f();
-		position = new Vector3f(0, 0, 0);
-		rotation = new Vector3f(0, 0, 0);
-		scale = new Vector3f(1, 1, 1);
+		this.model = mesh;
 		
 		GenArrays();
+	}
+	
+	public void Draw()
+	{	
+		prep();
+		
+		GL30.glDrawElements(GL30.GL_TRIANGLES, model.getIndices().length, GL30.GL_UNSIGNED_INT, 0);
+		
+		finish();
+	}
+	
+	private void prep()
+	{
+		GL30.glBindVertexArray(vao);
+		
+		GL30.glEnableVertexAttribArray(0);
+		GL30.glEnableVertexAttribArray(1);
+		GL30.glEnableVertexAttribArray(2);
+		
+		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
+
+	}
+	
+	private void finish()
+	{
+		GL30.glDisableVertexAttribArray(0);
+		GL30.glDisableVertexAttribArray(1);
+		GL30.glDisableVertexAttribArray(2);
+		
+		GL30.glBindVertexArray(0);
+		GL30.glBindVertexArray(1);
+		GL30.glBindVertexArray(2);
+		
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, 0);
+	}
+	
+	private int loadIndices()
+	{
+		int ebo = GL30.glGenBuffers();
+		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
+		GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, model.getIndices(), GL30.GL_STATIC_DRAW);
+		return ebo;
+	}
+	
+	private void GenArrays()
+	{
+		vao = GL30.glGenVertexArrays();
+		GL30.glBindVertexArray(vao);
+		
+		buffers.add(loadAttrib(0, model.getVertices(), 3));
+		buffers.add(loadAttrib(1, model.getTexCoords(), 2));
+		buffers.add(loadAttrib(2, model.getNormals(), 3));
+		
+		ebo = loadIndices();
+		buffers.add(ebo);
 	}
 	
 	private int loadAttrib(int id, float[] data, int size)
@@ -43,91 +88,16 @@ public class GameObject {
 		return v;
 	}
 	
-	
-	public void Draw()
-	{	
-		GL30.glBindVertexArray(vao);
-		
-		GL30.glEnableVertexAttribArray(0);
-		GL30.glEnableVertexAttribArray(1);
-		
-		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
-		
-		//Fix This
-		GL30.glDrawElements(GL30.GL_TRIANGLES, indices.length, GL30.GL_UNSIGNED_INT, 0);
-		
-		GL30.glDisableVertexAttribArray(0);
-		GL30.glDisableVertexAttribArray(1);
-		GL30.glBindVertexArray(0);
-		GL30.glBindVertexArray(1);
-		
-		GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, 0);
-	}
-	
-	private void GenArrays()
-	{
-		vao = GL30.glGenVertexArrays();
-		GL30.glBindVertexArray(vao);
-		
-		vbo = loadAttrib(0, vertices, 3);
-		
-		texId = texture.getTexId();
-		
-		tbo = loadAttrib(1, texCoords, 2);
-		
-		ebo = GL30.glGenBuffers();
-		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
-		GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, indices, GL30.GL_STATIC_DRAW);
-	}
-	
 	public void CleanUp()
 	{
 		GL30.glDeleteVertexArrays(vao);
-		GL30.glDeleteBuffers(vbo);
-		GL30.glDeleteBuffers(tbo);
+		
+		for (Integer i : buffers) {
+			GL30.glDeleteBuffers(i);
+		}
 	}
-	
-	
-	public Matrix4f getModel() {
+
+	public Model getModel() {
 		return model;
 	}
-
-	public void setModel(Matrix4f model) {
-		this.model = model;
-	}
-
-	public Vector3f getPosition() {
-		return position;
-	}
-
-	public void setPosition(float x,float y, float z) {
-		this.position.x  = x;
-		this.position.y = y;
-		this.position.z  = z;
-	}
-
-	public Vector3f getRotation() {
-		return rotation;
-	}
-
-	public void setRotation(float x,float y, float z) {
-		this.rotation.x  = x;
-		this.rotation.y = y;
-		this.rotation.z  = z;
-	}
-
-	public Vector3f getScale() {
-		return scale;
-	}
-
-	public void setScale(float x,float y, float z) {
-		this.scale.x  = x;
-		this.scale.y = y;
-		this.scale.z  = z;
-	}
-	
-	public Texture getTexture() {
-		return texture;
-	}
-
 }

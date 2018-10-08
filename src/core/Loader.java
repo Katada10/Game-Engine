@@ -35,6 +35,7 @@ import Util.DataPair;
 import Util.Texture;
 import Util.Utils;
 import render.GameObject;
+import render.Model;
 
 public class Loader {
 	public static int LoadShaders(String vert, String frag) {
@@ -268,16 +269,19 @@ public class Loader {
 	private static Combination ReadData(String src)
 	{
 		List<Vector3f> iVerts = Process(src, "positions");
+		List<Vector3f> iNorms = Process(src, "normals");
 		List<Vector2f> iTex = Process2f(src, "texcoord");
 		List<Integer> indices = GetIndices(src);
 		
 		
 		List<Vector3f> verts = new ArrayList<>();
+		List<Vector3f> normals = new ArrayList<>();
 		List<Vector2f> textures = new ArrayList<>();
 		List<Integer> ind = new ArrayList<>();
 		
 		
 		Vector3f[] vArr = Utils.ToVecArray(iVerts);
+		Vector3f[] nArr = Utils.ToVecArray(iNorms);
 		Vector2f[] tArr = Utils.ToVecArray2f(iTex);
 		int[] cArr = Utils.ToArrayInt(indices);
 		
@@ -286,14 +290,16 @@ public class Loader {
 		
 		for (int i = 0; i < cArr.length; i++) {
 			Vector3f vertex = vArr[cArr[i]];
+			Vector3f normal = nArr[cArr[i]];
 			Vector2f texture = tArr[cArr[i]];
 			
-			DataPair pair = new DataPair(vertex, texture);
+			DataPair pair = new DataPair(vertex, normal, texture);
 			
 			if(!d.contains(pair))
 			{
 				d.add(pair);
 				verts.add(vertex);
+				normals.add(normal);
 				textures.add(texture);
 				ind.add(d.getKey(pair));
 			}
@@ -303,7 +309,7 @@ public class Loader {
 			}
 		}
 		
-		return new Combination(verts, textures, ind);
+		return new Combination(verts, normals, textures, ind);
 	}
 	
 	public static GameObject LoadObj(String file, String image)
@@ -325,15 +331,18 @@ public class Loader {
 		
 		
 		List<Vector3f> vertices = c.getVertices();
+		List<Vector3f> normals = c.getNormals();
 		List<Vector2f> textures = c.getTextures();
 		List<Integer> indices = c.getIndices();
 		
 		float[] vArr = Utils.VecToArr(vertices);
+		float[] nArr = Utils.VecToArr(normals);
 		float[] tArr = Utils.VecToArr2f(textures);
 		int[] ind = Utils.ToArrayInt(indices);
 		
 		Texture t = new Texture(image);
 		
-		return new GameObject(vArr, tArr, ind, t);
+		Model model = new Model(vArr, nArr, tArr, ind, t);
+		return new GameObject(model);
 	}
 }

@@ -20,7 +20,6 @@ public class Engine {
 	private String title;
 	private static long window;
 	
-	
 	public Engine(int w, int h, String title) {
 		Engine.w = w;
 		Engine.h = h;
@@ -91,7 +90,9 @@ public class Engine {
 		 glfwSetErrorCallback(null).free();
 	}
 	
-	
+	public static long getWindow() {
+		return window;
+	}
 
 	public static float getW()
 	{

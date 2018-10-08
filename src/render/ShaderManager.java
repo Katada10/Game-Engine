@@ -14,8 +14,11 @@ public class ShaderManager {
 	public ShaderManager(int progId) {
 		this.progId = progId;
 		
-		createMatrices();
+		
 		setUniform("sampler", 0);
+		view = new Matrix4f();
+		
+		createMatrices();
 	}
 	
 	public void render(GameObject o)
@@ -57,7 +60,6 @@ public class ShaderManager {
 				Camera.aspect, Camera.near, 
 				Camera.far);
 		
-		view = new Matrix4f().identity();
 		view.rotate((float)Math.toRadians(Camera.getYaw()), new Vector3f(0, 1, 0));
 		view.rotate((float)Math.toRadians(Camera.getPitch()), new Vector3f(1, 0, 0));
 		

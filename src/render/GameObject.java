@@ -13,6 +13,16 @@ public class GameObject {
 	
 	private Matrix4f model;
 	
+	private int iSize;
+	
+	public int getiSize() {
+		return iSize;
+	}
+
+	public void setiSize(int iSize) {
+		this.iSize = iSize;
+	}
+
 	public Matrix4f getModel() {
 		return model;
 	}
@@ -81,7 +91,7 @@ public class GameObject {
 		GL30.glEnableVertexAttribArray(1);
 		
 		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
-		GL30.glDrawElements(GL30.GL_TRIANGLE_FAN, indices.length, GL30.GL_UNSIGNED_INT, 0);
+		GL30.glDrawElements(GL30.GL_TRIANGLE_FAN, iSize, GL30.GL_UNSIGNED_INT, 0);
 		
 		GL30.glDisableVertexAttribArray(0);
 		GL30.glDisableVertexAttribArray(1);

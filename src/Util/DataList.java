@@ -23,15 +23,28 @@ public class DataList {
 	}
 	
 	
-	public void getKey(DataPair d)
+	public DataPair get(int key)
 	{
+		return map.get(key);
+	}
+	
+	public int getKey(DataPair d)
+	{
+		for (Integer i : keys) {
+			if(map.get(i) == d)
+			{
+				return i;
+			}
+		}
 		
+		return -1;
 	}
 	
 	public void add(DataPair d)
 	{
 		if(!contains(d))
 		{
+			map.put(first, d);
 			pairs.add(d);
 			keys.add(first);
 			first++;

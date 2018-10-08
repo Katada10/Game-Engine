@@ -8,34 +8,9 @@ import Util.Texture;
 import core.Loader;
 
 public class GameObject {
-	private int vao;
-	private int vbo;
-	private int tbo;
+	private int vao, vbo, tbo, ebo, texId;
 	
 	private Matrix4f model;
-	
-	private int iSize;
-	
-	public int getiSize() {
-		return iSize;
-	}
-
-	public void setiSize(int iSize) {
-		this.iSize = iSize;
-	}
-
-	public Matrix4f getModel() {
-		return model;
-	}
-
-	public void setModel(Matrix4f model) {
-		this.model = model;
-	}
-
-	int ebo;
-	
-	private int texId;
-
 	String imagePath;
 	
 	private float[] vertices, texCoords;
@@ -44,11 +19,6 @@ public class GameObject {
 	private Vector3f position, rotation, scale;
 	Texture texture;
 	
-
-	public Texture getTexture() {
-		return texture;
-	}
-
 	public GameObject(float[] vertices, float[] texCoords, int[] indices,  Texture t) {
 		this.vertices = vertices;
 		this.texture = t;
@@ -75,20 +45,23 @@ public class GameObject {
 	
 	
 	public void Draw()
-	{
-		GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, texId);
+	{	
 		GL30.glBindVertexArray(vao);
 		
 		GL30.glEnableVertexAttribArray(0);
 		GL30.glEnableVertexAttribArray(1);
 		
 		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
-		GL30.glDrawElements(GL30.GL_TRIANGLE_FAN, iSize, GL30.GL_UNSIGNED_INT, 0);
+		
+		//Fix This
+		GL30.glDrawElements(GL30.GL_TRIANGLES, indices.length, GL30.GL_UNSIGNED_INT, 0);
 		
 		GL30.glDisableVertexAttribArray(0);
 		GL30.glDisableVertexAttribArray(1);
 		GL30.glBindVertexArray(0);
 		GL30.glBindVertexArray(1);
+		
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, 0);
 	}
 	
 	private void GenArrays()
@@ -98,13 +71,13 @@ public class GameObject {
 		
 		vbo = loadAttrib(0, vertices, 3);
 		
-		ebo = GL30.glGenBuffers();
-		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
-		GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, indices, GL30.GL_STATIC_DRAW);
-		
+		texId = texture.getTexId();
 		
 		tbo = loadAttrib(1, texCoords, 2);
 		
+		ebo = GL30.glGenBuffers();
+		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
+		GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, indices, GL30.GL_STATIC_DRAW);
 	}
 	
 	public void CleanUp()
@@ -115,27 +88,46 @@ public class GameObject {
 	}
 	
 	
+	public Matrix4f getModel() {
+		return model;
+	}
+
+	public void setModel(Matrix4f model) {
+		this.model = model;
+	}
+
 	public Vector3f getPosition() {
 		return position;
 	}
 
-	public void setPosition(Vector3f position) {
-		this.position = position;
+	public void setPosition(float x,float y, float z) {
+		this.position.x  = x;
+		this.position.y = y;
+		this.position.z  = z;
 	}
 
 	public Vector3f getRotation() {
 		return rotation;
 	}
 
-	public void setRotation(Vector3f rotation) {
-		this.rotation = rotation;
+	public void setRotation(float x,float y, float z) {
+		this.rotation.x  = x;
+		this.rotation.y = y;
+		this.rotation.z  = z;
 	}
 
 	public Vector3f getScale() {
 		return scale;
 	}
 
-	public void setScale(Vector3f scale) {
-		this.scale = scale;
+	public void setScale(float x,float y, float z) {
+		this.scale.x  = x;
+		this.scale.y = y;
+		this.scale.z  = z;
 	}
+	
+	public Texture getTexture() {
+		return texture;
+	}
+
 }

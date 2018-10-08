@@ -31,11 +31,6 @@ public class Renderer {
 			addObject(gameObject);
 		}
 	}
-
-	public void addObject(float[] verts, float[] texCoords, int[] indices, String image)
-	{
-		objects.add(new GameObject(verts, texCoords, indices, image));
-	}
 	
 	public void addObject(GameObject o)
 	{
@@ -48,6 +43,7 @@ public class Renderer {
 		
 		for(GameObject o : objects)
 		{
+			o.setRotation(0, -0.01f, 0);
 			sm.render(o);
 		}
 		

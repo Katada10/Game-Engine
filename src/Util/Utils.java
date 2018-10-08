@@ -19,6 +19,38 @@ import javafx.scene.shape.Path;
 
 public class Utils {
 
+	
+	public static float[] VecToArr2f(List<Vector2f> v)
+	{
+
+		List<Float> floats = new ArrayList<>();
+		
+		for (Vector2f vec : v) {
+			floats.add(vec.x);
+			floats.add(vec.y);
+		}
+		
+		
+		float[] fin = ToArray(floats);
+		return fin;
+	}
+	
+	public static float[] VecToArr(List<Vector3f> v)
+	{
+
+		List<Float> floats = new ArrayList<>();
+		
+		for (Vector3f vec : v) {
+			floats.add(vec.x);
+			floats.add(vec.y);
+			floats.add(vec.z);
+		}
+		
+		
+		float[] fin = ToArray(floats);
+		return fin;
+	}
+	
 	public static float[] ToArray(List<Float> v)
 	{
 		

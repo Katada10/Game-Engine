@@ -67,7 +67,6 @@ public class Engine {
 		Renderer r = new Renderer("vert.txt", "frag.txt");
 		
 		while ( !glfwWindowShouldClose(window) ) {
-			glEnable(GL_DEPTH_TEST);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 			
 			r.Render();

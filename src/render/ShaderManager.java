@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL30;
 
 public class ShaderManager {
 	private int progId;
-	private Matrix4f projection, model, view;
+	private Matrix4f projection, view;
 	
 	
 	public ShaderManager(int progId) {
@@ -18,21 +18,19 @@ public class ShaderManager {
 		setUniform("sampler", 0);
 	}
 	
-	public void render()
+	public void render(GameObject o)
 	{
 		setMatrix("projection", projection);
 		setMatrix("view", view);
-	}
-	
-	public void render(GameObject o)
-	{
-		model.translate(o.getPosition());
-		model.rotate(o.getRotation().x, new Vector3f(1, 0, 0));
-		model.rotate(o.getRotation().y, new Vector3f(0, 1, 0));
-		model.rotate(o.getRotation().z, new Vector3f(0, 0, 1));
-		model.scale(o.getScale());
 		
-		setMatrix("model", model);
+		o.setModel(new Matrix4f().identity().translate(o.getPosition())
+				.rotate(o.getRotation().x, new Vector3f(1, 0, 0))
+				.rotate(o.getRotation().y, new Vector3f(0, 1, 0))
+				.rotate(o.getRotation().z, new Vector3f(0, 0, 1))
+				.scale(o.getScale()));
+		
+		setMatrix("model", o.getModel());
+		o.Draw();
 	}
 	
 	private void setMatrix(String name, Matrix4f value)
@@ -65,6 +63,5 @@ public class ShaderManager {
 		view.translate(new Vector3f(-Camera.getPosition().x,
 				-Camera.getPosition().y, -Camera.getPosition().z));
 		
-		model = new Matrix4f().identity();
 	}
 }

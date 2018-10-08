@@ -1,14 +1,17 @@
 package core;
 
 import java.io.BufferedReader;
+import java.io.Externalizable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,7 +28,8 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 
-import render.Combination;
+import Util.Combination;
+import Util.Utils;
 import render.GameObject;
 
 public class Loader {
@@ -99,98 +103,110 @@ public class Loader {
 		return texId;
 	}
 
-	public static GameObject LoadModel(String path, String imagePath) {
+	private static List<Vector2f> Process2f(String src, String flag) {
+		String[] lines = src.split("\n");
 
-		String src = "";
-		try {
-			Scanner scanner = new Scanner(new File("res/models/" + path));
-			while (scanner.hasNextLine()) {
-				src += scanner.nextLine() + "\n";
+		for (String s : lines) {
+			if (s.contains("<float_array") && s.contains(flag)) {
+				// We found the line with vertices
+				char[] characters = s.toCharArray();
+
+				String nStr = "";
+				// Remove Tags
+				for (int b = 0; b <= characters.length - 1; b++) {
+					// verts = verts.replace(characters[b], ' ');
+					if (b <= s.indexOf('>')) {
+						continue;
+					} else {
+						nStr += characters[b];
+					}
+
+				}
+
+				// Removed First tag, remove second tag
+				String vStr = "";
+				char[] chara = nStr.toCharArray();
+				for (int b = 0; b <= chara.length - 1; b++) {
+					// verts = verts.replace(characters[b], ' ');
+					vStr += chara[b];
+
+					if (b == nStr.indexOf('<') - 1) {
+						break;
+					}
+				}
+
+				String[] vertStrings = vStr.split(" ");
+
+				List<Vector2f> vertices = new ArrayList<>();
+				int counter = 0;
+				for (int i = 0; i < vertStrings.length; i++) {
+					counter++;
+
+					if (counter == 2) {
+						vertices.add(new Vector2f(Float.parseFloat(vertStrings[i - 1]),
+								Float.parseFloat(vertStrings[i])));
+						counter = 0;
+					}
+				}
+				return vertices;
 			}
-			scanner.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		}
-
-		// tag is <float_array></float_array>
-		// tex Coords are in mesh-map, vertices are mesh-positions
-		// <p> contains indices, first vertex, then normal, then texcoord
-
-		// You Got This!
-		
-		Combination comb = ProcessMain(src);
-		
-		List<Vector3f> verts = comb.getVerts();
-		List<Vector2f> textures = comb.getTex();
-		List<Integer> ind = comb.getIndices();
-
-		
-		float[] vertices = ConvertVector(verts);
-		float[] texCoords = ConvertVector2f(textures);
-		//ConvertVector2f(textures);
-
-		Integer[] arr = new Integer[ind.size()];
-		arr = ind.toArray(arr);
-		
-		int[] x = new int[arr.length];
-
-		for (int i = 0; i < x.length; i++) {
-			x[i] = arr[i];
-		}
-		
-		// CHANGE THIS WHEN DONE
-		return new GameObject(vertices, texCoords, x, imagePath);
-	}
-
-	private static float[] ConvertVector2f(List<Vector2f> pg) {
-		Vector2f[] arr = new Vector2f[pg.size()];
-		arr = pg.toArray(arr);
-		
-		List<Float> tconverted = new ArrayList<>();
-
-		for (int i = 0; i < arr.length; i++) {
-			tconverted.add(arr[i].x);
-			tconverted.add(arr[i].y);
-		}
-		
-		Float[] converted = new Float[tconverted.size()];
-		converted = tconverted.toArray(converted);
-		
-		float[] x = new float[converted.length];
-		
-		for (int i = 0; i < x.length; i++) {
-			x[i] = converted[i];
-		}
-		
-		return x;
+		return null;
 	}
 	
-	private static float[] ConvertVector(List<Vector3f> pg) {
-		Vector3f[] arr = new Vector3f[pg.size()];
-		arr = pg.toArray(arr);
-		
-		List<Float> tconverted = new ArrayList<>();
-		
+	private static List<Vector3f> Process(String src, String flag) {
+		String[] lines = src.split("\n");
 
-		for (int i = 0; i < arr.length; i++) {
-			tconverted.add(arr[i].x);
-			tconverted.add(arr[i].y);
-			tconverted.add(arr[i].z);
+		for (String s : lines) {
+			if (s.contains("<float_array") && s.contains(flag)) {
+				// We found the line with vertices
+				char[] characters = s.toCharArray();
+
+				String nStr = "";
+				// Remove Tags
+				for (int b = 0; b <= characters.length - 1; b++) {
+					// verts = verts.replace(characters[b], ' ');
+					if (b <= s.indexOf('>')) {
+						continue;
+					} else {
+						nStr += characters[b];
+					}
+
+				}
+
+				// Removed First tag, remove second tag
+				String vStr = "";
+				char[] chara = nStr.toCharArray();
+				for (int b = 0; b <= chara.length - 1; b++) {
+					// verts = verts.replace(characters[b], ' ');
+					vStr += chara[b];
+
+					if (b == nStr.indexOf('<') - 1) {
+						break;
+					}
+				}
+
+				String[] vertStrings = vStr.split(" ");
+
+				List<Vector3f> vertices = new ArrayList<>();
+				int counter = 0;
+				for (int i = 0; i < vertStrings.length; i++) {
+					counter++;
+
+					if (counter == 3) {
+						vertices.add(new Vector3f(Float.parseFloat(vertStrings[i - 2]),
+								Float.parseFloat(vertStrings[i - 1]), Float.parseFloat(vertStrings[i])));
+						counter = 0;
+					}
+				}
+				return vertices;
+			}
 		}
-		
-		Float[] converted = new Float[tconverted.size()];
-		converted = tconverted.toArray(converted);
-		
-		float[] x = new float[converted.length];
-		
-		for (int i = 0; i < x.length; i++) {
-			x[i] = converted[i];
-		}
-		
-		return x;
+		return null;
 	}
-
-	private static List<Vector3f> ProcessIndices(String src) {
+	
+	private static List<Vector3f> GetIndices(String src)
+	{
 		String[] lines = src.split("\n");
 
 		for (String s : lines) {
@@ -243,173 +259,90 @@ public class Loader {
 				}
 				// Process the actual vertices
 				return indices;
-				
 			}
 		}
 
 		return null;
 	}
 
-	private static List<Vector3f> Process(String src, String flag) {
-		String[] lines = src.split("\n");
-
-		for (String s : lines) {
-			if (s.contains("<float_array") && s.contains(flag)) {
-				// We found the line with vertices
-				char[] characters = s.toCharArray();
-
-				String nStr = "";
-				// Remove Tags
-				for (int b = 0; b <= characters.length - 1; b++) {
-					// verts = verts.replace(characters[b], ' ');
-					if (b <= s.indexOf('>')) {
-						continue;
-					} else {
-						nStr += characters[b];
-					}
-
-				}
-
-				// Removed First tag, remove second tag
-				String vStr = "";
-				char[] chara = nStr.toCharArray();
-				for (int b = 0; b <= chara.length - 1; b++) {
-					// verts = verts.replace(characters[b], ' ');
-					vStr += chara[b];
-
-					if (b == nStr.indexOf('<') - 1) {
-						break;
-					}
-				}
-
-				String[] vertStrings = vStr.split(" ");
-
-				List<Vector3f> vertices = new ArrayList<>();
-				int counter = 0;
-				for (int i = 0; i < vertStrings.length; i++) {
-					counter++;
-
-					if (counter == 3) {
-						vertices.add(new Vector3f(Float.parseFloat(vertStrings[i - 2]),
-								Float.parseFloat(vertStrings[i - 1]), -Float.parseFloat(vertStrings[i])));
-						counter = 0;
-					}
-				}
-				return vertices;
-			}
+	private static Combination ReadData(String src)
+	{
+		List<Vector3f> iVerts = Process(src, "mesh-positions");
+		List<Vector2f> iTex = Process2f(src, "mesh-map");
+		List<Vector3f> indices = GetIndices(src);
+		
+		List<Vector3f> vUnpacked = new ArrayList<>();
+		List<Vector2f> tUnpacked = new ArrayList<>();
+		List<Integer> iUnpacked = new ArrayList<>();
+		
+		Vector3f[] vArr = Utils.ToArray(iVerts);
+		Vector2f[] tArr = Utils.ToArray2f(iTex);
+		Vector3f[] cArr = Utils.ToArray(indices);
+		
+		
+		for (int i = 0; i < cArr.length; i++) {
+			Vector3f vertex = vArr[(int)cArr[i].x];
+			vUnpacked.add(vertex);
+			
+			Vector2f texture = tArr[(int)cArr[i].z];
+			tUnpacked.add(texture);
+			
+			iUnpacked.add(iUnpacked.size() - 1);
 		}
-		return null;
+		
+		return new Combination(vUnpacked, tUnpacked, iUnpacked);
 	}
 	
-	private static List<Vector2f> Process2f(String src, String flag) {
-		String[] lines = src.split("\n");
-
-		for (String s : lines) {
-			if (s.contains("<float_array") && s.contains(flag)) {
-				// We found the line with vertices
-				char[] characters = s.toCharArray();
-
-				String nStr = "";
-				// Remove Tags
-				for (int b = 0; b <= characters.length - 1; b++) {
-					// verts = verts.replace(characters[b], ' ');
-					if (b <= s.indexOf('>')) {
-						continue;
-					} else {
-						nStr += characters[b];
-					}
-
-				}
-
-				// Removed First tag, remove second tag
-				String vStr = "";
-				char[] chara = nStr.toCharArray();
-				for (int b = 0; b <= chara.length - 1; b++) {
-					// verts = verts.replace(characters[b], ' ');
-					vStr += chara[b];
-
-					if (b == nStr.indexOf('<') - 1) {
-						break;
-					}
-				}
-
-				String[] vertStrings = vStr.split(" ");
-
-				List<Vector2f> vertices = new ArrayList<>();
-				int counter = 0;
-				for (int i = 0; i < vertStrings.length; i++) {
-					counter++;
-
-					if (counter == 2) {
-						vertices.add(new Vector2f(Float.parseFloat(vertStrings[i - 1]),
-								Float.parseFloat(vertStrings[i])));
-						counter = 0;
-					}
-				}
-				return vertices;
+	public static GameObject LoadObj(String file, String image)
+	{
+		Scanner s;
+		String src = "";
+		try {
+			s = new Scanner(new File("res/models/" + file + ".dae"));
+			while(s.hasNextLine())
+			{
+				src += s.nextLine() + "\n";
 			}
-		}
-		return null;
-	}
-
-	private static  Combination ProcessMain(String src) {
-
-		// Array vertices
-		// Array texcoords
-
-		List<Vector3f> vertices = Process(src, "mesh-positions");
-		List<Vector2f> texCoords = Process2f(src, "mesh-map");
-		
-		List<Vector3f> indices = ProcessIndices(src);
-		
-		List<Vector3f> vertsUnpacked = new ArrayList<>();
-		List<Vector2f> texUnpacked = new ArrayList<>();
-
-		List<Integer> indicesUnpacked = new ArrayList<>();
-		
-		Vector3f[] vertArr = new Vector3f[vertices.size()];
-		vertArr = vertices.toArray(vertArr);
-		
-		Vector2f[] texArr = new Vector2f[texCoords.size()];
-		texArr = texCoords.toArray(texArr);
-		
-		Vector3f[] indexTriplets = new Vector3f[indices.size()];
-		indexTriplets = indices.toArray(indexTriplets);
-		
-		for(int i = 0; i < indexTriplets.length; i++)
-		{
-			Vector3f vertex = vertArr[(int)indexTriplets[i].x];
-			vertsUnpacked.add(vertex);
-			
-			Vector2f tex = texArr[(int)indexTriplets[i].z];
-			texUnpacked.add(tex);
-			
-			indicesUnpacked.add(indicesUnpacked.size());
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-
-		return new Combination(vertsUnpacked, texUnpacked, indicesUnpacked);
+		Combination c = ReadData(src);
 		
-		/*
-		 * Read vertices from file, store in vertice, same for texcoords
-		 * 
-		 * Array vertsunpacked, texunpacked Array int indicesunpacked
-		 * 
-		 * 
-		 * Loop STARTS HERE (every three pairs) 
-		 * v1 is the index v1/vt1 
-		 * Vector3 vertex1 = vertices[v1] 
-		 * vertsunpacked.add(vertex1)
-		 * 
-		 * same for other two verts
-		 * 
-		 * 
-		 * same as previous but for texcoords Vector2 tex1 = texcoords[vt1]
-		 * texunpacked.add(tex1)
-		 * 
-		 * Maybe some trouble here indicesUnpacked.add(indicesUnpacked.size)
-		 * indicesUnpacked.add(indicesUnpacked.size)
-		 * indicesUnpacked.add(indicesUnpacked.size) LOOP ENDS HERE - NEXT ITERATION
-		 */
+		List<Vector3f> vertices = c.getVertices();
+		List<Vector2f> textures = c.getTextures();
+		List<Integer> indices = c.getIndices();
+		
+		Vector3f[] vArr = Utils.ToArray(vertices);
+		Vector2f[] tArr = Utils.ToArray2f(textures);
+		int[] ind = Utils.ToArrayInt(indices);
+		
+		FloatBuffer buf = BufferUtils.createFloatBuffer(vArr.length * 3);
+		
+		for (int i = 0; i < vArr.length; i++) {
+			buf.put(vArr[i].x);
+			buf.put(vArr[i].y);
+			buf.put(vArr[i].z);
+		}
+		
+		buf.flip();
+		float[] verts = new float[buf.limit()];
+		buf.get(verts);
+		
+
+
+		FloatBuffer b = BufferUtils.createFloatBuffer(tArr.length * 2);
+		
+		for (int i = 0; i < tArr.length; i++) {
+			b.put(tArr[i].x);
+			b.put(tArr[i].y);
+		}
+		
+		b.flip();
+		float[] tex = new float[b.limit()];
+		b.get(tex);
+		
+		return new GameObject(verts, tex, ind, image);
 	}
 }

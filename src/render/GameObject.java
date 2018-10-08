@@ -1,5 +1,6 @@
 package render;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 
@@ -10,6 +11,16 @@ public class GameObject {
 	private int vbo;
 	private int tbo;
 	
+	private Matrix4f model;
+	
+	public Matrix4f getModel() {
+		return model;
+	}
+
+	public void setModel(Matrix4f model) {
+		this.model = model;
+	}
+
 	int ebo;
 	
 	private int texId;
@@ -25,17 +36,41 @@ public class GameObject {
 		this.imagePath = path;
 		this.texCoords = texCoords;
 		this.indices = indices;
-
-		position = new Vector3f(0, -0.001f, 0);
+		
+		position = new Vector3f(0, 0, 0);
 		rotation = new Vector3f(0, 0, 0);
 		scale = new Vector3f(1, 1, 1);
 		
 		GenArrays();
 	}
 	
+	public GameObject(float[] vertices, float[] texCoords, int[] indices, String path, Vector3f pos) {
+		this.vertices = vertices;
+		this.imagePath = path;
+		this.texCoords = texCoords;
+		this.indices = indices;
+
+		position = pos;
+		rotation = new Vector3f(0, 0, 0);
+		scale = new Vector3f(1, 1, 1);
+		
+		GenArrays();
+	}
+	
+	
+	private int loadAttrib(int id, float[] data, int size)
+	{
+		int v = GL30.glGenBuffers();
+		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, v);
+		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, data, GL30.GL_STATIC_DRAW);
+		GL30.glVertexAttribPointer(id, size, GL30.GL_FLOAT,false, 0, 0);
+		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
+		return v;
+	}
+	
+	
 	public void Draw()
 	{
-		GL30.glActiveTexture(GL30.GL_TEXTURE0);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, texId);
 		
 		GL30.glBindVertexArray(vao);
@@ -48,39 +83,26 @@ public class GameObject {
 		
 		GL30.glDisableVertexAttribArray(0);
 		GL30.glDisableVertexAttribArray(1);
-		
 		GL30.glBindVertexArray(0);
+		GL30.glBindVertexArray(1);
 	}
 	
 	private void GenArrays()
 	{
 		vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
-
 		
+		vbo = loadAttrib(0, vertices, 3);
 		
 		ebo = GL30.glGenBuffers();
 		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
 		GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, indices, GL30.GL_STATIC_DRAW);
-		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, 0);
 		
-		vbo = GL30.glGenBuffers();
-		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo);
-		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, vertices, GL30.GL_STATIC_DRAW);
-		GL30.glVertexAttribPointer(0, 3, GL30.GL_FLOAT,false, 0, 0);
-		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
-
+		
 		texId = Loader.LoadImage("res/images/" + imagePath);
 		
+		tbo = loadAttrib(1, texCoords, 2);
 		
-		tbo = GL30.glGenBuffers();
-		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, tbo);
-		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, texCoords, GL30.GL_STATIC_DRAW);
-		GL30.glVertexAttribPointer(1, 2, GL30.GL_FLOAT,false, 0, 0);
-		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
-		
-		GL30.glBindVertexArray(0);
-		GL30.glBindVertexArray(1);
 	}
 	
 	public void CleanUp()

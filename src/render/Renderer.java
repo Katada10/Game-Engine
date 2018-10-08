@@ -16,7 +16,9 @@ public class Renderer {
 	ShaderManager sm;
 	
 	Camera cam;
+	GameObject obj;
 	
+	GameObject o;
 	
 	public Renderer(String vertpath, String fragpath) {
 		progId = Loader.LoadShaders(vertpath, fragpath);
@@ -24,7 +26,10 @@ public class Renderer {
 		cam = new Camera();
 		sm = new ShaderManager(progId);
 
-		addObject(Loader.LoadModel("model.dae", "image.jpg"));
+
+//Add Objects Here
+		addObject(Loader.LoadObj("model", "image.jpg"));
+
 	}
 
 	public void addObject(float[] verts, float[] texCoords, int[] indices, String image)
@@ -42,13 +47,11 @@ public class Renderer {
 		GL30.glDisable(GL30.GL_CULL_FACE);
 		GL20.glUseProgram(progId);
 		
-		sm.render();
 		for(GameObject o : objects)
 		{
-			o.setRotation(new Vector3f(0, -0.01f, 0));
 			sm.render(o);
-			o.Draw();
 		}
+		
 	}
 	
 	public void Destroy()

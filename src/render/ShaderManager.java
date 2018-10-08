@@ -23,13 +23,14 @@ public class ShaderManager {
 		setMatrix("projection", projection);
 		setMatrix("view", view);
 		
-		o.setModel(new Matrix4f().identity().translate(o.getPosition())
+		o.setModel(o.getModel().translate(o.getPosition())
 				.rotate(o.getRotation().x, new Vector3f(1, 0, 0))
 				.rotate(o.getRotation().y, new Vector3f(0, 1, 0))
 				.rotate(o.getRotation().z, new Vector3f(0, 0, 1))
 				.scale(o.getScale()));
 		
 		setMatrix("model", o.getModel());
+
 		o.Draw();
 	}
 	

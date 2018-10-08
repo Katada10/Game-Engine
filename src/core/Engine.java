@@ -57,7 +57,6 @@ public class Engine {
 		glfwSwapInterval(1);
 
 		glfwShowWindow(window);
-		
 	}
 	
 	private void Run()
@@ -68,6 +67,11 @@ public class Engine {
 		
 		while ( !glfwWindowShouldClose(window) ) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+			glEnable(GL_DEPTH_TEST);
+			glEnable(GL_CULL_FACE);
+			
+			glCullFace(GL_FRONT);
+			glDepthFunc(GL_LESS);
 			
 			r.Render();
 			

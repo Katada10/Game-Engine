@@ -28,7 +28,7 @@ public class Renderer {
 
 
 //Add Objects Here
-		addObject(Loader.LoadObj("model", "image.jpg"));
+		addObject(Loader.LoadObj("model", "image.png"));
 
 	}
 
@@ -44,11 +44,11 @@ public class Renderer {
 	
 	public void Render()
 	{
-		GL30.glDisable(GL30.GL_CULL_FACE);
 		GL20.glUseProgram(progId);
 		
 		for(GameObject o : objects)
 		{
+			o.setRotation(new Vector3f(0, -0.01f, 0));
 			sm.render(o);
 		}
 		

@@ -37,6 +37,7 @@ public class GameObject {
 		this.texCoords = texCoords;
 		this.indices = indices;
 		
+		model = new Matrix4f();
 		position = new Vector3f(0, 0, 0);
 		rotation = new Vector3f(0, 0, 0);
 		scale = new Vector3f(1, 1, 1);

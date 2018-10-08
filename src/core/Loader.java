@@ -29,6 +29,8 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 
 import Util.Combination;
+import Util.DataList;
+import Util.DataPair;
 import Util.Utils;
 import render.GameObject;
 
@@ -271,6 +273,10 @@ public class Loader {
 		List<Vector2f> iTex = Process2f(src, "mesh-map");
 		List<Vector3f> indices = GetIndices(src);
 		
+		for (Vector3f v : iVerts) {
+			System.out.println(v);
+		}
+		
 		List<Vector3f> vUnpacked = new ArrayList<>();
 		List<Vector2f> tUnpacked = new ArrayList<>();
 		List<Integer> iUnpacked = new ArrayList<>();
@@ -279,15 +285,31 @@ public class Loader {
 		Vector2f[] tArr = Utils.ToArray2f(iTex);
 		Vector3f[] cArr = Utils.ToArray(indices);
 		
+		DataList d = new DataList();
 		
 		for (int i = 0; i < cArr.length; i++) {
 			Vector3f vertex = vArr[(int)cArr[i].x];
-			vUnpacked.add(vertex);
 			
 			Vector2f texture = tArr[(int)cArr[i].z];
-			tUnpacked.add(texture);
 			
-			iUnpacked.add(iUnpacked.size() - 1);
+			DataPair pair = new DataPair(vertex, texture);
+			
+			//Whatevs
+			if(!d.contains(pair))
+			{
+				d.add(pair);
+			}
+			//DataPair pair = new DataPair(vertex, texture, counter);
+			//FINALLY
+			//If the pair already exists, add the pairs index to the draw list
+			//FIGURE THIS OUT!
+		}
+		
+		for(DataPair pair : d.getPairs())
+		{
+			vUnpacked.add(pair.getVert());
+			tUnpacked.add(pair.getTex());
+			iUnpacked.add(d.getKey(pair));
 		}
 		
 		return new Combination(vUnpacked, tUnpacked, iUnpacked);
@@ -309,6 +331,7 @@ public class Loader {
 		}
 		
 		Combination c = ReadData(src);
+		
 		
 		List<Vector3f> vertices = c.getVertices();
 		List<Vector2f> textures = c.getTextures();

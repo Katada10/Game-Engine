@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -124,7 +125,6 @@ public class Loader {
 					}
 
 				}
-
 				// Removed First tag, remove second tag
 				String vStr = "";
 				char[] chara = nStr.toCharArray();
@@ -141,12 +141,16 @@ public class Loader {
 
 				List<Vector2f> vertices = new ArrayList<>();
 				int counter = 0;
-				for (int i = 0; i < vertStrings.length; i++) {
+				for (int i = 1; i < vertStrings.length; i++) {
 					counter++;
 
+					
 					if (counter == 2) {
-						vertices.add(new Vector2f(Float.parseFloat(vertStrings[i - 1]),
-								Float.parseFloat(vertStrings[i])));
+						
+						Float x = Float.parseFloat(vertStrings[i-1]);
+						Float y = Float.parseFloat(vertStrings[i]);
+						
+						vertices.add(new Vector2f(x, y));
 						counter = 0;
 					}
 				}
@@ -175,7 +179,6 @@ public class Loader {
 					}
 
 				}
-
 				// Removed First tag, remove second tag
 				String vStr = "";
 				char[] chara = nStr.toCharArray();
@@ -192,12 +195,17 @@ public class Loader {
 
 				List<Vector3f> vertices = new ArrayList<>();
 				int counter = 0;
-				for (int i = 0; i < vertStrings.length; i++) {
+				for (int i = 1; i < vertStrings.length; i++) {
 					counter++;
 
+					
 					if (counter == 3) {
-						vertices.add(new Vector3f(Float.parseFloat(vertStrings[i - 2]),
-								Float.parseFloat(vertStrings[i - 1]), Float.parseFloat(vertStrings[i])));
+						
+						Float x = Float.parseFloat(vertStrings[i-2]);
+						Float y = Float.parseFloat(vertStrings[i-1]);
+						Float z = Float.parseFloat(vertStrings[i]);
+						
+						vertices.add(new Vector3f(x, y, z));
 						counter = 0;
 					}
 				}
@@ -207,7 +215,7 @@ public class Loader {
 		return null;
 	}
 	
-	private static List<Vector3f> GetIndices(String src)
+	private static List<Integer> GetIndices(String src)
 	{
 		String[] lines = src.split("\n");
 
@@ -227,7 +235,7 @@ public class Loader {
 					}
 
 				}
-
+				
 				// Removed First tag, remove second tag
 				String vStr = "";
 				char[] chara = nStr.toCharArray();
@@ -240,26 +248,14 @@ public class Loader {
 					}
 				}
 
-				List<Vector3f> indices = new ArrayList<>();
+				List<Integer> indices = new ArrayList<>();
 				
-				// Below separates vertindices
-
-				//int[] indices = new int[vStr.split(" ").length];
-				int count = 0;
-				for(int i = 0; i < vStr.split(" ").length; i++)
+				for(int i = 1; i < vStr.split(" ").length; i++)
 				{
-					count++;
-					if(count == 3)
-					{
-						indices.add(new Vector3f(
-							Integer.parseInt(vStr.split(" ")[i - 2]), 
-							Integer.parseInt(vStr.split(" ")[i - 1]),
-							Integer.parseInt(vStr.split(" ")[i])));
-						count = 0;
-					}
+					indices.add(Integer.parseInt(vStr.split(" ")[i].replace(" ", "")));
 					
 				}
-				// Process the actual vertices
+
 				return indices;
 			}
 		}
@@ -269,31 +265,76 @@ public class Loader {
 
 	private static Combination ReadData(String src)
 	{
-		List<Vector3f> iVerts = Process(src, "mesh-positions");
-		List<Vector2f> iTex = Process2f(src, "mesh-map");
-		List<Vector3f> indices = GetIndices(src);
 		
-		for (Vector3f v : iVerts) {
-			System.out.println(v);
+		PrintWriter w = null;
+		try {
+			w = new PrintWriter(new File("log.txt"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
 		}
 		
-		List<Vector3f> vUnpacked = new ArrayList<>();
-		List<Vector2f> tUnpacked = new ArrayList<>();
-		List<Integer> iUnpacked = new ArrayList<>();
+		List<Vector3f> iVerts = Process(src, "positions");
+		List<Vector2f> iTex = Process2f(src, "texcoord");
+		List<Integer> indices = GetIndices(src);
+		
+		
+		List<Vector3f> verts = new ArrayList<>();
+		List<Vector2f> textures = new ArrayList<>();
+		List<Integer> ind = new ArrayList<>();
+		
 		
 		Vector3f[] vArr = Utils.ToArray(iVerts);
 		Vector2f[] tArr = Utils.ToArray2f(iTex);
-		Vector3f[] cArr = Utils.ToArray(indices);
+		int[] cArr = Utils.ToArrayInt(indices);
 		
 		DataList d = new DataList();
 		
+		
 		for (int i = 0; i < cArr.length; i++) {
+			Vector3f vertex = vArr[cArr[i]];
+			Vector2f texture = tArr[cArr[i]];
+			
+			DataPair pair = new DataPair(vertex, texture);
+			
+			if(!d.contains(pair))
+			{
+				d.add(pair);
+				verts.add(vertex);
+				textures.add(texture);
+				ind.add(d.getKey(pair));
+			}
+			else
+			{
+				ind.add(d.getKey(pair));
+			}
+		}
+		
+		for (Vector3f i : verts) {
+			w.print(i);
+		}
+		
+		w.println();
+		w.println();
+		
+		for (Vector2f i : textures) {
+			w.print(i);
+		}
+		w.println();
+		w.println();
+		
+		for (Integer i : ind) {
+			w.print(i + " , ");
+		}
+		/*for (int i = 0; i < cArr.length; i++) {
+			
 			Vector3f vertex = vArr[(int)cArr[i].x];
 			
 			Vector2f texture = tArr[(int)cArr[i].z];
 			
 			DataPair pair = new DataPair(vertex, texture);
-			
+
 			//Whatevs
 			if(!d.contains(pair))
 			{
@@ -303,16 +344,18 @@ public class Loader {
 			//FINALLY
 			//If the pair already exists, add the pairs index to the draw list
 			//FIGURE THIS OUT!
-		}
+		}*/
 		
-		for(DataPair pair : d.getPairs())
+		w.close();
+		
+		/*for(DataPair pair : d.getPairs())
 		{
 			vUnpacked.add(pair.getVert());
 			tUnpacked.add(pair.getTex());
-			iUnpacked.add(d.getKey(pair));
+			indices.add(d.getKey(pair));
 		}
-		
-		return new Combination(vUnpacked, tUnpacked, iUnpacked);
+		*/
+		return new Combination(verts, textures, ind);
 	}
 	
 	public static GameObject LoadObj(String file, String image)

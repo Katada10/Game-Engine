@@ -21,6 +21,16 @@ public class MatrixManager{
 		projection = createMatrices(projection);
 	}
 	
+	
+	protected static void setVec3(String name, Vector3f value) {
+		int location = GL30.glGetUniformLocation(progId, name);
+
+		FloatBuffer fb = BufferUtils.createFloatBuffer((int)value.length() * 3);
+		value.get(fb);
+
+		GL30.glUniform3f(location, value.x, value.y, value.z);
+	}
+	
 	protected static void setMatrix(String name, Matrix4f value) {
 		int location = GL30.glGetUniformLocation(progId, name);
 		FloatBuffer fb = BufferUtils.createFloatBuffer(16);

@@ -24,12 +24,18 @@ public class GameObject {
 	int ebo;
 	
 	private int texId;
+	
+	public int getTexId() {
+		return texId;
+	}
+
 	String imagePath;
 	
 	private float[] vertices, texCoords;
 	private int[] indices;
 
 	private Vector3f position, rotation, scale;
+	
 
 	public GameObject(float[] vertices, float[] texCoords, int[] indices, String path) {
 		this.vertices = vertices;
@@ -72,8 +78,7 @@ public class GameObject {
 	
 	public void Draw()
 	{
-		GL30.glBindTexture(GL30.GL_TEXTURE_2D, texId);
-		
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, texId);
 		GL30.glBindVertexArray(vao);
 		
 		GL30.glEnableVertexAttribArray(0);

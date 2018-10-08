@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import core.Loader;
+import core.ModelLoader;
 
 public class Renderer {
 
@@ -16,9 +17,6 @@ public class Renderer {
 	ShaderManager sm;
 	
 	Camera cam;
-	GameObject obj;
-	
-	GameObject o;
 	
 	public Renderer(String vertpath, String fragpath) {
 		progId = Loader.LoadShaders(vertpath, fragpath);
@@ -28,8 +26,10 @@ public class Renderer {
 
 
 //Add Objects Here
-		addObject(Loader.LoadObj("model", "image.png"));
-
+		
+		for (GameObject gameObject : ModelLoader.Load("model.obj", "image.jpg")) {
+			addObject(gameObject);
+		}
 	}
 
 	public void addObject(float[] verts, float[] texCoords, int[] indices, String image)
@@ -48,7 +48,6 @@ public class Renderer {
 		
 		for(GameObject o : objects)
 		{
-			o.setRotation(new Vector3f(0, -0.01f, 0));
 			sm.render(o);
 		}
 		

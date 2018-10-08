@@ -48,7 +48,6 @@ public class Renderer {
 		
 		for(GameObject o : objects)
 		{
-			o.setRotation(new Vector3f(0, -0.01f, 0));
 			sm.render(o);
 		}
 		

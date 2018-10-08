@@ -1,7 +1,4 @@
-package core;
-
-import render.GameObject;
-import render.Model;
+package util;
 
 import static org.lwjgl.assimp.Assimp.*;
 
@@ -18,8 +15,9 @@ import org.lwjgl.assimp.AINode;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AITexture;
 
-import Util.Texture;
-import Util.Utils;
+import data.GameObject;
+import data.Model;
+import data.Texture;
 
 public class ModelLoader {
 	

@@ -6,7 +6,8 @@ import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 
-import Util.MatrixManager;
+import data.GameObject;
+import data.Model;
 
 public class ShaderManager extends MatrixManager {
 	

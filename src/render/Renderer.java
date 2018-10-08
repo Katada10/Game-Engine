@@ -7,9 +7,9 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import Util.MatrixManager;
-import core.Loader;
-import core.ModelLoader;
+import data.GameObject;
+import util.Loader;
+import util.ModelLoader;
 
 public class Renderer {
 

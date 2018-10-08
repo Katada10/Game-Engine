@@ -1,6 +1,6 @@
-package Util;
+package data;
 
-import core.Loader;
+import util.Loader;
 
 public class Texture {
 

@@ -1,4 +1,4 @@
-package core;
+package util;
 
 import java.io.BufferedReader;
 import java.io.Externalizable;
@@ -29,13 +29,12 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 
-import Util.Combination;
-import Util.DataList;
-import Util.DataPair;
-import Util.Texture;
-import Util.Utils;
-import render.GameObject;
-import render.Model;
+import data.GameObject;
+import data.Model;
+import data.Texture;
+import data.util.Combination;
+import data.util.DataList;
+import data.util.DataPair;
 
 public class Loader {
 	public static int LoadShaders(String vert, String frag) {

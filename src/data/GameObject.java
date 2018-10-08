@@ -1,4 +1,4 @@
-package render;
+package data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,6 @@ import java.util.List;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
-
-import Util.Texture;
 
 public class GameObject {
 	private int vao, ebo;
@@ -65,19 +63,6 @@ public class GameObject {
 		return ebo;
 	}
 	
-	private void GenArrays()
-	{
-		vao = GL30.glGenVertexArrays();
-		GL30.glBindVertexArray(vao);
-		
-		buffers.add(loadAttrib(0, model.getVertices(), 3));
-		buffers.add(loadAttrib(1, model.getTexCoords(), 2));
-		buffers.add(loadAttrib(2, model.getNormals(), 3));
-		
-		ebo = loadIndices();
-		buffers.add(ebo);
-	}
-	
 	private int loadAttrib(int id, float[] data, int size)
 	{
 		int v = GL30.glGenBuffers();
@@ -96,7 +81,20 @@ public class GameObject {
 			GL30.glDeleteBuffers(i);
 		}
 	}
-
+	
+	private void GenArrays()
+	{
+		vao = GL30.glGenVertexArrays();
+		GL30.glBindVertexArray(vao);
+		
+		buffers.add(loadAttrib(0, model.getVertices(), 3));
+		buffers.add(loadAttrib(1, model.getTexCoords(), 2));
+		buffers.add(loadAttrib(2, model.getNormals(), 3));
+		
+		ebo = loadIndices();
+		buffers.add(ebo);
+	}
+	
 	public Model getModel() {
 		return model;
 	}

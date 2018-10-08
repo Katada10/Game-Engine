@@ -267,16 +267,6 @@ public class Loader {
 
 	private static Combination ReadData(String src)
 	{
-		
-		PrintWriter w = null;
-		try {
-			w = new PrintWriter(new File("log.txt"));
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
 		List<Vector3f> iVerts = Process(src, "positions");
 		List<Vector2f> iTex = Process2f(src, "texcoord");
 		List<Integer> indices = GetIndices(src);
@@ -287,8 +277,8 @@ public class Loader {
 		List<Integer> ind = new ArrayList<>();
 		
 		
-		Vector3f[] vArr = Utils.ToArray(iVerts);
-		Vector2f[] tArr = Utils.ToArray2f(iTex);
+		Vector3f[] vArr = Utils.ToVecArray(iVerts);
+		Vector2f[] tArr = Utils.ToVecArray2f(iTex);
 		int[] cArr = Utils.ToArrayInt(indices);
 		
 		DataList d = new DataList();
@@ -313,49 +303,6 @@ public class Loader {
 			}
 		}
 		
-		for (Vector3f i : verts) {
-			w.print(i);
-		}
-		
-		w.println();
-		w.println();
-		
-		for (Vector2f i : textures) {
-			w.print(i);
-		}
-		w.println();
-		w.println();
-		
-		for (Integer i : ind) {
-			w.print(i + " , ");
-		}
-		/*for (int i = 0; i < cArr.length; i++) {
-			
-			Vector3f vertex = vArr[(int)cArr[i].x];
-			
-			Vector2f texture = tArr[(int)cArr[i].z];
-			
-			DataPair pair = new DataPair(vertex, texture);
-			//Whatevs
-			if(!d.contains(pair))
-			{
-				d.add(pair);
-			}
-			//DataPair pair = new DataPair(vertex, texture, counter);
-			//FINALLY
-			//If the pair already exists, add the pairs index to the draw list
-			//FIGURE THIS OUT!
-		}*/
-		
-		w.close();
-		
-		/*for(DataPair pair : d.getPairs())
-		{
-			vUnpacked.add(pair.getVert());
-			tUnpacked.add(pair.getTex());
-			indices.add(d.getKey(pair));
-		}
-		*/
 		return new Combination(verts, textures, ind);
 	}
 	

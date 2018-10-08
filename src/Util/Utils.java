@@ -51,6 +51,26 @@ public class Utils {
 		return fin;
 	}
 	
+	
+	public static Vector3f[] ToVecArray(List<Vector3f> v)
+	{
+		
+		Vector3f[] b = new Vector3f[v.size()];
+		b = v.toArray(b);
+
+		return b;
+	}
+	
+	public static Vector2f[] ToVecArray2f(List<Vector2f> v)
+	{
+		
+		Vector2f[] b = new Vector2f[v.size()];
+		b = v.toArray(b);
+
+		return b;
+	}
+	
+	
 	public static float[] ToArray(List<Float> v)
 	{
 		

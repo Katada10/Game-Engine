@@ -30,10 +30,6 @@ public class Renderer {
 		
 		GameObject o2 = Loader.LoadObj("cube", "mario.jpg");
 		addObject(o2);
-		
-		/*for (GameObject obj : ModelLoader.Load("model.obj", "mario.jpg")) {
-			addObject(obj);
-		}*/
 	}
 	
 	public void addObject(GameObject o)

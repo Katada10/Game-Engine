@@ -19,7 +19,8 @@ public class ShaderManager extends MatrixManager {
 	{
 		Model model = o.getModel();
 		
-		model.setModelMat(model.getModelMat().translate(model.getPosition())
+		//PROBLEM WAS NOT SETTING IDENTITY
+		model.setModelMat(model.getModelMat().identity().translate(model.getPosition())
 				.rotate(model.getRotation().x, new Vector3f(1, 0, 0))
 				.rotate(model.getRotation().y, new Vector3f(0, 1, 0))
 				.rotate(model.getRotation().z, new Vector3f(0, 0, 1))

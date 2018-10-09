@@ -18,6 +18,17 @@ public class MatrixManager{
 		projection = createMatrices(projection);
 	}
 	
+	public static Matrix4f createView(Camera cam) {
+		Matrix4f view = new Matrix4f();
+        view.rotate((float) Math.toRadians(cam.getPitch()), new Vector3f(1, 0, 0));
+        view.rotate((float) Math.toRadians(cam.getYaw()), new Vector3f(0, 1, 0));
+        Vector3f cameraPos = cam.getPosition();
+        Vector3f neg = new Vector3f(-cameraPos.x,-cameraPos.y,-cameraPos.z);
+        view.translate(neg);
+        return view;
+		
+	}
+	
 	
 	protected static void setVec3(String name, Vector3f value) {
 		int location = GL30.glGetUniformLocation(progId, name);
@@ -28,7 +39,7 @@ public class MatrixManager{
 		GL30.glUniform3f(location, value.x, value.y, value.z);
 	}
 	
-	protected static void setMatrix(String name, Matrix4f value) {
+	public static void setMatrix(String name, Matrix4f value) {
 		int location = GL30.glGetUniformLocation(progId, name);
 		FloatBuffer fb = BufferUtils.createFloatBuffer(16);
 
@@ -37,7 +48,7 @@ public class MatrixManager{
 		GL30.glUniformMatrix4fv(location, false, fb);
 	}
 
-	protected static Matrix4f createMatrices(Matrix4f projection) {
+	public static Matrix4f createMatrices(Matrix4f projection) {
 		projection = new Matrix4f().perspective(Camera.FOV, Camera.aspect, Camera.near, Camera.far);
 		return projection;
 	}

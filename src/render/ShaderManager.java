@@ -15,6 +15,12 @@ public class ShaderManager extends MatrixManager {
 		super(progId);
 	}
 	
+	public void setViewMat(Camera cam)
+	{
+		Matrix4f view = MatrixManager.createView(cam);
+		setMatrix("view", view);
+	}
+	
 	public void setModelMat(GameObject o)
 	{
 		Model model = o.getModel();
@@ -29,10 +35,6 @@ public class ShaderManager extends MatrixManager {
 		setMatrix("model", model.getModelMat());
 	}
 	
-	public void render(Camera c)
-	{
-		setMatrix("view", c.view);
-	}
 	public void render(GameObject o)
 	{
 		setMatrix("projection", projection);

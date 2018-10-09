@@ -42,6 +42,10 @@ public class Renderer {
 		GL20.glUseProgram(progId);
 		BufferManager.start();
 		
+		
+		cam.Move();
+	
+		sm.render(cam);
 		for(GameObject o : objects)
 		{
 			sm.render(o);

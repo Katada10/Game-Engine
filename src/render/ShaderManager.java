@@ -29,10 +29,13 @@ public class ShaderManager extends MatrixManager {
 		setMatrix("model", model.getModelMat());
 	}
 	
+	public void render(Camera c)
+	{
+		setMatrix("view", c.view);
+	}
 	public void render(GameObject o)
 	{
 		setMatrix("projection", projection);
-		setMatrix("view", view);
 		
 		setModelMat(o);
 		

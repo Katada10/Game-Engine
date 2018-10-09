@@ -1,5 +1,6 @@
 package render;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -13,10 +14,43 @@ public class Camera {
 
 	private static Vector3f position;
 	boolean isMoving = false;
-
+	public Matrix4f view;
+	
+	
 	public Camera() {
-		position = new Vector3f(0, 0, 7);
 
+		position = new Vector3f(0, 0, 7);
+		
+		view = new Matrix4f();
+		createView(view);
+	}
+	
+	private void createView(Matrix4f view) {
+		
+		Vector3f neg = new Vector3f(-position.x, -position.y, -position.z);
+		view.translate(neg)
+				.rotate(pitch, new Vector3f(1, 0, 0))
+				.rotate(yaw, new Vector3f(0, 1, 0));
+		}
+	
+	public void Move()
+	{
+		if(Input.getKey(GLFW_KEY_A))
+		{
+			view.translate(0.2f, 0, 0);
+		}
+		if(Input.getKey(GLFW_KEY_S))
+		{
+			view.translate(0, 0, -0.2f);
+		}
+		if(Input.getKey(GLFW_KEY_D))
+		{
+			view.translate(-0.2f, 0, 0);
+		}
+		if(Input.getKey(GLFW_KEY_W))
+		{
+			view.translate(0, 0, 0.2f);
+		}
 	}
 
 	public static Vector3f getPosition() {

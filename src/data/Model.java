@@ -5,7 +5,29 @@ import org.joml.Vector3f;
 
 public class Model {
 	private float[] vertices, normals, texCoords;
+	private Texture texture;
+
+	String texKey;
+
+	public Model(float[] vertices, float[] normals, float[] texCoords, int[] indices, Texture t) {
+		this.vertices = vertices;
+		this.normals = normals;
+		this.texCoords = texCoords;
+		this.indices = indices;
+		
+		this.texture = t;
+		
+		modelMat = new Matrix4f();
+		
+		position = new Vector3f(0, 0, 0);
+		rotation = new Vector3f(0, 0, 0);
+		scale = new Vector3f(1, 1, 1);
+	}
 	
+	public Texture getTexture() {
+		return texture;
+	}
+
 	public Matrix4f getModelMat() {
 		return modelMat;
 	}
@@ -18,6 +40,10 @@ public class Model {
 	
 	public float[] getNormals() {
 		return normals;
+	}
+
+	public String getTexKey() {
+		return texKey;
 	}
 
 	public int[] getIndices() {
@@ -34,10 +60,6 @@ public class Model {
 
 	public float[] getTexCoords() {
 		return texCoords;
-	}
-
-	public Texture getTexture() {
-		return texture;
 	}
 
 	private int[] indices;
@@ -70,20 +92,5 @@ public class Model {
 		this.scale.x  = x;
 		this.scale.y = y;
 		this.scale.z  = z;
-	}
-	Texture texture;
-	
-	public Model(float[] vertices, float[] normals, float[] texCoords, int[] indices, Texture texture) {
-		this.vertices = vertices;
-		this.normals = normals;
-		this.texCoords = texCoords;
-		this.indices = indices;
-		this.texture = texture;
-		
-		modelMat = new Matrix4f();
-		
-		position = new Vector3f(0, 0, 0);
-		rotation = new Vector3f(0, 0, 0);
-		scale = new Vector3f(1, 1, 1);
 	}
 }

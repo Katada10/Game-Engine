@@ -3,12 +3,10 @@ package data;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 
 public class GameObject {
-	private int vao, ebo;
+	private int ebo;
 	
 	private List<Integer> buffers;
 	private Model model;
@@ -31,15 +29,12 @@ public class GameObject {
 	}
 	
 	private void prep()
-	{
-		GL30.glBindVertexArray(vao);
-		
+	{	
 		GL30.glEnableVertexAttribArray(0);
 		GL30.glEnableVertexAttribArray(1);
 		GL30.glEnableVertexAttribArray(2);
 		
 		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
-
 	}
 	
 	private void finish()
@@ -74,9 +69,7 @@ public class GameObject {
 	}
 	
 	public void CleanUp()
-	{
-		GL30.glDeleteVertexArrays(vao);
-		
+	{	
 		for (Integer i : buffers) {
 			GL30.glDeleteBuffers(i);
 		}
@@ -84,9 +77,6 @@ public class GameObject {
 	
 	private void GenArrays()
 	{
-		vao = GL30.glGenVertexArrays();
-		GL30.glBindVertexArray(vao);
-		
 		buffers.add(loadAttrib(0, model.getVertices(), 3));
 		buffers.add(loadAttrib(1, model.getTexCoords(), 2));
 		buffers.add(loadAttrib(2, model.getNormals(), 3));

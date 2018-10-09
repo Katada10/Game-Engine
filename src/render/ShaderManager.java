@@ -15,19 +15,25 @@ public class ShaderManager extends MatrixManager {
 		super(progId);
 	}
 	
-	public void render(GameObject o)
+	public void setModelMat(GameObject o)
 	{
 		Model model = o.getModel();
-		setMatrix("projection", projection);
-		setMatrix("view", view);
 		
-		model.setModelMat(model.getModelMat().translate(model.getPosition()).
-				rotate(model.getRotation().x, new Vector3f(1, 0, 0))
+		model.setModelMat(model.getModelMat().translate(model.getPosition())
+				.rotate(model.getRotation().x, new Vector3f(1, 0, 0))
 				.rotate(model.getRotation().y, new Vector3f(0, 1, 0))
 				.rotate(model.getRotation().z, new Vector3f(0, 0, 1))
 				.scale(model.getScale()));
 
 		setMatrix("model", model.getModelMat());
+	}
+	
+	public void render(GameObject o)
+	{
+		setMatrix("projection", projection);
+		setMatrix("view", view);
+		
+		setModelMat(o);
 		
 		o.Draw();
 	}

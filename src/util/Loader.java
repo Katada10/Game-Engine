@@ -29,6 +29,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 
+import data.BufferManager;
 import data.GameObject;
 import data.Model;
 import data.Texture;
@@ -93,6 +94,7 @@ public class Loader {
 
 		ByteBuffer data = stbi_load("res/images/"+ imagePath, width, height, nrChannels, 0);
 
+		
 		int texId = GL30.glGenTextures();
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, texId);
 
@@ -339,7 +341,18 @@ public class Loader {
 		float[] tArr = Utils.VecToArr2f(textures);
 		int[] ind = Utils.ToArrayInt(indices);
 		
-		Texture t = new Texture(image);
+		Texture t = null;
+		if(!BufferManager.names.containsKey(image))
+		{
+			int id = Loader.LoadImage(image);
+			t = new Texture(id);
+			BufferManager.names.put(image, t);
+			BufferManager.textures.put(id, t);
+		}
+		else
+		{
+			t = BufferManager.names.get(image);
+		}
 		
 		Model model = new Model(vArr, nArr, tArr, ind, t);
 		return new GameObject(model);

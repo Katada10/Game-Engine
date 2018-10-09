@@ -15,6 +15,7 @@ import org.lwjgl.assimp.AINode;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AITexture;
 
+import data.BufferManager;
 import data.GameObject;
 import data.Model;
 import data.Texture;
@@ -95,8 +96,18 @@ public class ModelLoader {
 
 		int[] ind = Utils.ToArrayInt(indices);
 		
-		Texture t = new Texture(path);
-
+		Texture t = null;
+		if(!BufferManager.names.containsKey(path))
+		{
+			int id = Loader.LoadImage(path);
+			t = new Texture(id);
+			BufferManager.names.put(path, t);
+			BufferManager.textures.put(id, t);
+		}
+		else
+		{
+			t = BufferManager.names.get(path);
+		}
 		
 		Model model = new Model(verts, norms, tex, ind, t);
 		GameObject o = new GameObject(model);

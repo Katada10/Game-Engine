@@ -18,7 +18,49 @@ public class BufferManager {
 	public static Map<Integer, Texture> textures = new HashMap<>();
 	public static Map<String, Texture> names = new HashMap<>();
 	
+	public static List<Model> modList = new ArrayList<>();
 	public static Map<Integer, Model> models = new HashMap<>();
+	public static Map<Model, Integer> ids = new HashMap<>();
+	
+	
+	
+	public static boolean equals(Model f, Model m)
+	{
+		for (int i = 0; i < f.getTexCoords().length; i++) {
+			if(m.getTexCoords()[i] == f.getTexCoords()[i])
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static int getModelId(Model model)
+	{
+		for (Model m : modList) {
+			if(equals(m, model))
+			{
+				return ids.get(m);
+			}
+		}
+		return 0;
+	}
+	
+	public static boolean containsModel(Model m)
+	{
+		for (Model model : modList) {
+			for (int i = 0; i < model.getTexCoords().length; i++) {
+				if(m.getTexCoords()[i] == model.getTexCoords()[i])
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	
 	public static void init() {
 		vao = GL30.glGenVertexArrays();

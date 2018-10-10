@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
+import render.Renderer;
 import shaders.Camera;
 import shaders.ShaderRenderer;
 
@@ -62,7 +63,7 @@ public class Engine {
 	{
 		GL.createCapabilities();
 		
-		ShaderRenderer r = new ShaderRenderer("vert.txt", "frag.txt");
+		Renderer r = new Renderer();
 		
 		while ( !glfwWindowShouldClose(window) ) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
@@ -73,13 +74,13 @@ public class Engine {
 			glCullFace(GL_FRONT);
 			glDepthFunc(GL_LESS);
 			
-			r.Render();
+			r.render();
 			
 			glfwSwapBuffers(window); 
 			glfwPollEvents();
 		}
 		
-		r.Destroy();
+		r.destroy();
 	}
 	
 	private void Finish()

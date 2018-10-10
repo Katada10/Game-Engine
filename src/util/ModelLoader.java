@@ -110,7 +110,18 @@ public class ModelLoader {
 		}
 		
 		Model model = new Model(verts, norms, tex, ind, t);
-		GameObject o = new GameObject(model);
-		return o;
+		int id;
+		if(!BufferManager.models.containsValue(model))
+		{
+			id = BufferManager.first;
+			BufferManager.models.put(BufferManager.first, model);
+			BufferManager.ids.put(model, BufferManager.first);
+			BufferManager.first++;
+		}
+		else
+		{
+			id = BufferManager.ids.get(model);
+		}
+		return new GameObject(id);
 	}
 }

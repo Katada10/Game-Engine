@@ -355,6 +355,24 @@ public class Loader {
 		}
 		
 		Model model = new Model(vArr, nArr, tArr, ind, t);
-		return new GameObject(model);
+
+		int id;
+		if(!BufferManager.containsModel(model))
+		{
+			BufferManager.modList.add(model);
+			BufferManager.models.put(model.getId(), model);
+			BufferManager.ids.put(model, model.getId());
+			
+			model.setId(BufferManager.first);
+			BufferManager.first++;
+			
+			id = model.getId();
+		}
+		else
+		{
+			id = BufferManager.getModelId(model);
+		}
+		
+		return new GameObject(id);
 	}
 }

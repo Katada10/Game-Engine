@@ -9,8 +9,8 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-import render.Camera;
-import render.Renderer;
+import shaders.Camera;
+import shaders.ShaderRenderer;
 
 
 public class Engine {
@@ -62,7 +62,7 @@ public class Engine {
 	{
 		GL.createCapabilities();
 		
-		Renderer r = new Renderer("vert.txt", "frag.txt");
+		ShaderRenderer r = new ShaderRenderer("vert.txt", "frag.txt");
 		
 		while ( !glfwWindowShouldClose(window) ) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 

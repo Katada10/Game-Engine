@@ -1,4 +1,4 @@
-package render;
+package shaders;
 
 import java.nio.FloatBuffer;
 import org.joml.Matrix4f;
@@ -22,22 +22,24 @@ public class ShaderManager extends MatrixManager {
 		setMatrix("view", view);
 	}
 	
+	public void render(Model m)
+	{
+		setModelMat(m);
+		setMatrix("model", m.getModelMat());
+	}
 	
-	public void render(Camera cam, Model m)
+	public void render(Camera cam)
 	{
 		view = createView(cam);
-		setModelMat(m);
-		
 		
 		GL20.glUseProgram(progId);
-		setMatrix("model", m.getModelMat());
+		
 		setMatrix("view", view);
 		setMatrix("projection", projection);
 	}
 	
 	public void setModelMat(Model model)
 	{	
-		//PROBLEM WAS NOT SETTING IDENTITY
 		model.setModelMat(new Matrix4f());
 		model.setModelMat(model.getModelMat().translate(model.getPosition())
 				.rotate((float)Math.toDegrees(model.getRotation().x), new Vector3f(1, 0, 0))

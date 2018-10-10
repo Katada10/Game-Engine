@@ -22,7 +22,7 @@ public class GameObject {
 	public void Draw()
 	{	
 		prep();
-		
+
 		GL30.glDrawElements(GL30.GL_TRIANGLES, model.getIndices().length, GL30.GL_UNSIGNED_INT, 0);
 		
 		finish();

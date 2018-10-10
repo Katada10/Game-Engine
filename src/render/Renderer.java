@@ -52,11 +52,7 @@ public class Renderer {
 	public void draw(GameObject o) {
 		sm.render(o);
 
-		Model m = BufferManager.models.get(o.getModelId());
-
-
-		//Convert to buffers
-		//GL31.glDrawElementsInstanced(GL30.GL_TRIANGLES, buf, 1);
+		GL30.glDrawElements(GL30.GL_TRIANGLES, BufferManager.models.get(o.getModelId()).getIndices().length, GL30.GL_UNSIGNED_INT, 0);
 	}
 
 	public void render() {

@@ -6,8 +6,8 @@ import org.joml.Vector3f;
 public class Model {
 	private float[] vertices, normals, texCoords;
 	private Texture texture;
-
-	String texKey;
+	
+	private Matrix4f modelMat;
 
 	public Model(float[] vertices, float[] normals, float[] texCoords, int[] indices, Texture t) {
 		this.vertices = vertices;
@@ -35,15 +35,9 @@ public class Model {
 	public void setModelMat(Matrix4f modelMat) {
 		this.modelMat = modelMat;
 	}
-
-	private Matrix4f modelMat;
 	
 	public float[] getNormals() {
 		return normals;
-	}
-
-	public String getTexKey() {
-		return texKey;
 	}
 
 	public int[] getIndices() {

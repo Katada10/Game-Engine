@@ -22,10 +22,12 @@ public class Renderer {
 	
 	public Renderer(String vertpath, String fragpath) {
 		progId = Loader.LoadShaders(vertpath, fragpath);
-	
 		cam = new Camera();
 		sm = new ShaderManager(progId);
 	
+		//Set up matrices here (projection, view and model = new)
+		//Get locations
+		
 		BufferManager.init();
 		
 		GameObject o2 = Loader.LoadObj("cube", "mario.jpg");
@@ -39,15 +41,21 @@ public class Renderer {
 	
 	public void Render()
 	{
-		GL20.glUseProgram(progId);
 		BufferManager.start();
 		
 		cam.Move();
-		sm.setViewMat(cam);
 		
+		//reset view and model every frame
+		//translate camera
+		//scale, translate, and rotate model matrix
+		//Then use program
+		//then upload matrices
+		//before drawing
 		for(GameObject o : objects)
 		{
-			sm.render(o);
+			sm.render(cam, o.getModel());
+			o.Draw();
+			//sm.render(o);
 		}
 	}
 	

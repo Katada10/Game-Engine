@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import data.GameObject;
@@ -21,26 +22,27 @@ public class ShaderManager extends MatrixManager {
 		setMatrix("view", view);
 	}
 	
-	public void setModelMat(GameObject o)
+	
+	public void render(Camera cam, Model m)
 	{
-		Model model = o.getModel();
+		view = createView(cam);
+		setModelMat(m);
 		
-		//PROBLEM WAS NOT SETTING IDENTITY
-		model.setModelMat(model.getModelMat().identity().translate(model.getPosition())
-				.rotate(model.getRotation().x, new Vector3f(1, 0, 0))
-				.rotate(model.getRotation().y, new Vector3f(0, 1, 0))
-				.rotate(model.getRotation().z, new Vector3f(0, 0, 1))
-				.scale(model.getScale()));
-
-		setMatrix("model", model.getModelMat());
+		
+		GL20.glUseProgram(progId);
+		setMatrix("model", m.getModelMat());
+		setMatrix("view", view);
+		setMatrix("projection", projection);
 	}
 	
-	public void render(GameObject o)
-	{
-		setMatrix("projection", projection);
-		
-		setModelMat(o);
-		
-		o.Draw();
+	public void setModelMat(Model model)
+	{	
+		//PROBLEM WAS NOT SETTING IDENTITY
+		model.setModelMat(new Matrix4f());
+		model.setModelMat(model.getModelMat().translate(model.getPosition())
+				.rotate((float)Math.toDegrees(model.getRotation().x), new Vector3f(1, 0, 0))
+				.rotate((float)Math.toDegrees(model.getRotation().y), new Vector3f(0, 1, 0))
+				.rotate((float)Math.toDegrees(model.getRotation().z), new Vector3f(0, 0, 1))
+				.scale(model.getScale()));
 	}
 }

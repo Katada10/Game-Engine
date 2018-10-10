@@ -10,12 +10,14 @@ import org.lwjgl.opengl.GL30;
 public class MatrixManager{
 	
 	protected static Matrix4f projection;
+	protected static Matrix4f view;
+	
 	protected static int progId;
 	
 	public MatrixManager(int progId) {
 		MatrixManager.progId = progId;
 		
-		projection = createMatrices(projection);
+		createProjection();
 	}
 	
 	public static Matrix4f createView(Camera cam) {
@@ -48,8 +50,7 @@ public class MatrixManager{
 		GL30.glUniformMatrix4fv(location, false, fb);
 	}
 
-	public static Matrix4f createMatrices(Matrix4f projection) {
+	public static void createProjection() {
 		projection = new Matrix4f().perspective(Camera.FOV, Camera.aspect, Camera.near, Camera.far);
-		return projection;
 	}
 }

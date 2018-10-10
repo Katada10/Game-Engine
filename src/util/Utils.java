@@ -63,7 +63,6 @@ public class Utils {
 	
 	public static Vector2f[] ToVecArray2f(List<Vector2f> v)
 	{
-		
 		Vector2f[] b = new Vector2f[v.size()];
 		b = v.toArray(b);
 

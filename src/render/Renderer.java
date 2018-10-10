@@ -33,11 +33,7 @@ public class Renderer {
 		sm = new ShaderManager(r.getProgId());
 
 		BufferManager.init();
-
-		GameObject o = Loader.LoadObj("cube", "mario.jpg");
-		GameObject o2 = Loader.LoadObj("cube", "mario.jpg");
-
-		addObject(o2);
+		GameObject o = Loader.LoadObj("monkey", "mario.jpg");
 		addObject(o);
 	}
 
@@ -51,7 +47,6 @@ public class Renderer {
 
 	public void draw(GameObject o) {
 		sm.render(o);
-
 		GL30.glDrawElements(GL30.GL_TRIANGLES, BufferManager.models.get(o.getModelId()).getIndices().length, GL30.GL_UNSIGNED_INT, 0);
 	}
 

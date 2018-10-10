@@ -109,7 +109,6 @@ public class Loader {
 		return texId;
 	}
 	
-
 	private static List<Vector2f> Process2f(String src, String flag) {
 		String[] lines = src.split("\n");
 
@@ -316,18 +315,19 @@ public class Loader {
 	public static GameObject LoadObj(String file, String image)
 	{
 		Scanner s;
-		String src = "";
+		StringBuilder sb = new StringBuilder();
 		try {
 			s = new Scanner(new File("res/models/" + file + ".dae"));
 			while(s.hasNextLine())
 			{
-				src += s.nextLine() + "\n";
+				sb.append(s.nextLine() + "\n");
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		String src = sb.toString();
 		Combination c = ReadData(src);
 		
 		

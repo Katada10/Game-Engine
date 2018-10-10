@@ -7,6 +7,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import data.BufferManager;
 import data.GameObject;
 import data.Model;
 
@@ -22,10 +23,10 @@ public class ShaderManager extends MatrixManager {
 		setMatrix("view", view);
 	}
 	
-	public void render(Model m)
+	public void render(GameObject o)
 	{
-		setModelMat(m);
-		setMatrix("model", m.getModelMat());
+		setModelMat(o);
+		setMatrix("model", o.getModelMat());
 	}
 	
 	public void render(Camera cam)
@@ -38,13 +39,13 @@ public class ShaderManager extends MatrixManager {
 		setMatrix("projection", projection);
 	}
 	
-	public void setModelMat(Model model)
+	public void setModelMat(GameObject o)
 	{	
-		model.setModelMat(new Matrix4f());
-		model.setModelMat(model.getModelMat().translate(model.getPosition())
-				.rotate((float)Math.toDegrees(model.getRotation().x), new Vector3f(1, 0, 0))
-				.rotate((float)Math.toDegrees(model.getRotation().y), new Vector3f(0, 1, 0))
-				.rotate((float)Math.toDegrees(model.getRotation().z), new Vector3f(0, 0, 1))
-				.scale(model.getScale()));
+		o.setModelMat(new Matrix4f());
+		o.setModelMat(o.getModelMat().translate(o.getPosition())
+				.rotate((float)Math.toDegrees(o.getRotation().x), new Vector3f(1, 0, 0))
+				.rotate((float)Math.toDegrees(o.getRotation().y), new Vector3f(0, 1, 0))
+				.rotate((float)Math.toDegrees(o.getRotation().z), new Vector3f(0, 0, 1))
+				.scale(o.getScale()));
 	}
 }
